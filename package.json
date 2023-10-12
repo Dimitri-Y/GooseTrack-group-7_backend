@@ -6,9 +6,9 @@
   "repository": "https://github.com/Dimitri-Y/GooseTrack-group-7_backend",
   "main": "server.js",
   "scripts": {
-    "start": "node ./server.js",
+    "start": "cross-env NODE_ENV=production node ./server.js",
     "build": "nodemon ./server.js",
-    "start:dev": "nodemon ./server.js",
+    "start:dev": "cross-env NODE_ENV=development nodemon ./server.js",
     "lint": "eslint **/*.js",
     "lint:fix": "eslint --fix **/*.js"
   },
