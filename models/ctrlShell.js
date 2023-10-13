@@ -9,5 +9,4 @@ const ctrlShell = (ctrl) => {
 
   return func;
 };
-
-module.exports = ctrlShell;
+export default ctrlShell;

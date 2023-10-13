@@ -3,11 +3,11 @@ import logger from "morgan";
 import cors from "cors";
 import dotenv from "dotenv";
 import tasksRouter from "./routes/tasks-router.js";
+import reviewsRouter from "./routes/api/reviews-router.js";
 import swaggerUi from "swagger-ui-express";
 import * as fs from "fs";
 const swaggerDocument = JSON.parse(fs.readFileSync("./swagger.json"));
 // import swaggerDocument from "./swagger.json" assert { type: "json" };
-
 dotenv.config();
 
 const app = express();
@@ -28,6 +28,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message });
 });
 
+app.use("/api/reviews", reviewsRouter);
 app.use("/api/tasks", tasksRouter);
 
 export default app;

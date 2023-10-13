@@ -1,6 +1,6 @@
-const { Schema, model } = require("mongoose");
-const Joi = require("joi");
-const { runValidateAtUpdate, handleSaveError } = require("../hooks");
+import { Schema, model } from "mongoose";
+import Joi from "joi";
+import { handlleSaveError } from "../hooks.js";
 
 const emailRegexp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 
@@ -41,19 +41,13 @@ userSchema.post("save", handleSaveError);
 userSchema.pre("findOneAndUpdate", runValidateAtUpdate);
 userSchema.post("findOneAndUpdate", handleSaveError);
 
-const registerSchema = Joi.object({
+export const registerSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp),
   password: Joi.string().min(6).required(),
 });
-const authSchema = Joi.object({
+export const authSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).required(),
   password: Joi.string().min(6).required(),
 });
 
-const User = model("user", userSchema);
-
-module.exports = {
-  User,
-  registerSchema,
-  authSchema,
-};
+export const User = model("user", userSchema);
