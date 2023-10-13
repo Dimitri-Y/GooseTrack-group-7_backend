@@ -1,9 +1,9 @@
 const messageList = {
-  400: "missing required name field",
-  401: "Unauthorizated",
-  403: "Forbidden",
-  404: "Not Found",
-  409: "Conflict",
+  400: 'Bad Request',
+  401: 'Not authorized',
+  403: 'Forbidden',
+  404: 'Not Found',
+  409: 'Conflict',
 };
 
 const HttpError = (status, message = messageList[status]) => {
@@ -11,4 +11,5 @@ const HttpError = (status, message = messageList[status]) => {
   error.status = status;
   return error;
 };
+
 export default HttpError;
