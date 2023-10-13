@@ -1,9 +1,15 @@
-const Joi = require("joi");
+import Joi from "joi";
+
 
 const addSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().required(),
-  phone: Joi.string().required(),
+  password: Joi.string().min(6).required(),
+});
+const logSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().required(),
+  password: Joi.string().min(6).required(),
 });
 
 const updateSchema = Joi.object({

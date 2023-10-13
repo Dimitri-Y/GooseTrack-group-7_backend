@@ -6,6 +6,22 @@ const emailRegexp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 
 const userSchema = new Schema(
   {
+    userName: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    skype: {
+      type: String,
+      required: true,
+    },
+    birthday: {
+      type: String,
+      required: true,
+    },
     password: {
       type: String,
       required: [true, "Set password for userSchema"],
@@ -16,11 +32,7 @@ const userSchema = new Schema(
       required: [true, "Email is required"],
       unique: true,
     },
-    subscription: {
-      type: String,
-      enum: ["starter", "pro", "business"],
-      default: "starter",
-    },
+
     token: String,
   },
   { versionKey: false, timestamps: true }
