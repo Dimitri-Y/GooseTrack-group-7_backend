@@ -3,6 +3,7 @@ import logger from 'morgan';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import tasksRouter from './routes/tasks-router.js';
+import reviewsRouter from './routes/api/reviews-router.js';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use('/api/tasks', tasksRouter);
+app.use('/api/reviews', reviewsRouter)
 app.get('/', (req, res) => res.type('html').send(html));
 const html = `
 <!DOCTYPE html>
