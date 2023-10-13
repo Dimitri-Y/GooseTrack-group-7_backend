@@ -1,6 +1,5 @@
 import Joi from "joi";
 
-
 const addSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().required(),
@@ -21,7 +20,7 @@ const updateFavoriteSchema = Joi.object({
   favorite: Joi.boolean().required(),
 });
 
-module.exports = {
+export default {
   addSchema,
   updateSchema,
   updateFavoriteSchema,

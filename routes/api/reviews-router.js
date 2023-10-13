@@ -1,14 +1,17 @@
-const express = require('express');
+import express from "express";
 const reviewsRouter = express.Router();
-const ctrl = require("../../controllers/reviews-controller");
-import { addSchema, changeSchema} from "../../models/schemas/review";
+import { addSchema, changeSchema } from "../../models/schemas/review.js";
+import validateBody from "../../decorators/validateBody.js";
+import ctrl from "../../controllers/reviews-controller.js";
+
 reviewsRouter.get("/", ctrl.getAllReviews);
 
-reviewsRouter.get("/own", ctrl.getOwnReview );
+reviewsRouter.get("/own", ctrl.getOwnReview);
 
-reviewsRouter.post("/own", addSchema, ctrl.addReview);
+reviewsRouter.post("/own", validateBody(addSchema), ctrl.addReview);
 
-reviewsRouter.patch("/own", changeSchema, ctrl.updateReview);
+reviewsRouter.patch("/own", validateBody(changeSchema), ctrl.updateReview);
 
 reviewsRouter.delete("/own", ctrl.deleteReview);
-module.exports = reviewsRouter;
+
+export default reviewsRouter;
