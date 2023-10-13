@@ -8,7 +8,7 @@
   "node": "v20.8.0",
   "scripts": {
     "start": "node ./server.js",
-    "build": "node ./server.js",
+    "build": "node --trace-deprecation --trace-warnings ./server.js",
     "start:dev": "cross-env NODE_ENV=development nodemon ./server.js",
     "lint": "eslint **/*.js",
     "lint:fix": "eslint --fix **/*.js"
