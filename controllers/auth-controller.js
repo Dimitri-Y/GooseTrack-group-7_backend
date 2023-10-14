@@ -6,7 +6,8 @@ import { User } from "../models/schemas/user.js"
 import { nanoid } from "nanoid";
 const JWT_SECRET = I4JumDxGwP07hcyRioQtOxC4ndn6D36q;
 // BASE_URL = http://localhost:3000
-import { HttpError } from "../helpers/httpError"
+import { HttpError } from "../helpers/httpError.js"
+
 import gravatar from "gravatar";
 const avatarsPath = path.resolve("public", "avatar");
 ;
@@ -95,7 +96,7 @@ const updateUser = async (req, res) => {
   const avatarURL = path.join("avatar", filename);
   await User.findByIdAndUpdate(_id, { avatarURL });
   const { path: oldPath, filename } = req.file;
-  await User.findOneAndUpdate(email, skype, phone, userName, birthday);
+  await User.findByIdAndUpdate( _id , {email, skype, phone, userName, birthday});
   res.json({
     avatarURL,
     email,
