@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import HttpError from "../helpers/httpError.js";
 import User from "../models/Users.js";
-import ctrlWrapper from "../decorators/ctrlWrapper.js";
+
 
 const { JWT_SECRET } = process.env;
 
@@ -23,4 +23,7 @@ const authenticate = async (req, res, next) => {
     throw HttpError(401);
   }
 };
-export default ctrlWrapper(authenticate);
+export default authenticate;
+
+
+
