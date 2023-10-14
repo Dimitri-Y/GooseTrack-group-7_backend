@@ -4,6 +4,12 @@ import fs from "fs/promises";
 import path from "path";
 import { User } from "../models/schemas/user.js"
 import { nanoid } from "nanoid";
+const JWT_SECRET = I4JumDxGwP07hcyRioQtOxC4ndn6D36q;
+// BASE_URL = http://localhost:3000
+import { HttpError } from "../helpers/httpError"
+import gravatar from "gravatar";
+const avatarsPath = path.resolve("public", "avatar");
+;
 
 const signup = async (req, res) => {
   const { email } = req.body;
@@ -81,17 +87,24 @@ const logout = async (req, res) => {
 
   res.status(204);
 };
-// const updateUser = async (req, res) => {
-//   const { _id } = req.user;
-//   const { path: oldPath, filename } = req.file;
-//   const newPath = path.join(avatarsPath, filename);
-//   await fs.rename(oldPath, newPath);
-//   const avatarURL = path.join("avatars", filename);
-//   await User.findByIdAndUpdate(_id, { avatarURL });
-//   res.json({
-//     avatarURL,
-//   });
-// };
+const updateUser = async (req, res) => {
+  const { _id } = req.user;
+  const { email, skype, phone, userName, birthday } = req.body;
+  const newPath = path.join(avatarsPath, filename);
+  await fs.rename(oldPath, newPath);
+  const avatarURL = path.join("avatar", filename);
+  await User.findByIdAndUpdate(_id, { avatarURL });
+  const { path: oldPath, filename } = req.file;
+  await User.findOneAndUpdate(email, skype, phone, userName, birthday);
+  res.json({
+    avatarURL,
+    email,
+    skype,
+    phone,
+    userName,
+    birthday,
+  });
+};
 
 export default {
   signup,
