@@ -1,5 +1,6 @@
-const { Schema, model } = require("mongoose");
-const { handleSaveError } = require("../hooks");
+import { Schema, model } from "mongoose";
+import Joi from "joi";
+import { handlleSaveError } from "../hooks.js";
 
 const contactSchema = new Schema(
   {
@@ -27,7 +28,5 @@ const contactSchema = new Schema(
   { versionKey: false, timestamps: true }
 );
 
-contactSchema.post("save", handleSaveError);
-const Contact = model("contact", contactSchema);
-
-module.exports = Contact;
+contactSchema.post("save", handlleSaveError);
+export const Contact = model("contact", contactSchema);

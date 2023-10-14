@@ -1,12 +1,12 @@
-import { HttpError } from '../helpers/index.js';
-import { ctrlWrapper } from '../decorators/index.js';
-import Task from '../models/task.js';
+import HttpError from "../helpers/httpError.js";
+import ctrlWrapper from "../decorators/ctrlWrapper.js";
+import Task from "../models/task.js";
 
 const getAll = async (req, res) => {
   const { date, month } = req.query;
 
   const filteredTasks = Task.filter((task) => {
-    const taskDate = task.date.split('-');
+    const taskDate = task.date.split("-");
     return taskDate[0] === date && taskDate[1] === month;
   });
 
