@@ -7,18 +7,30 @@ const userSchema = new Schema(
   {
     password: {
       type: String,
-      required: [true, 'Set password for user'],
+      required: [true, "Set password for user"],
     },
     email: {
       type: String,
-      required: [true, 'Email is required'],
+      required: [true, "Email is required"],
       unique: true,
     },
-    subscription: {
+    nameUser: {
       type: String,
-      enum: ['starter', 'pro', 'business'],
-      default: 'starter',
+      required: true,
     },
+    skype: {
+      type: String,
+      required: [true, "Set password for user"],
+    },
+    birthday: {
+      type: String,
+      required: [true, "Set password for user"],
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+
     avatarURL: {
       type: String,
     },
