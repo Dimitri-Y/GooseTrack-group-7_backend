@@ -2,16 +2,14 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import fs from "fs/promises";
 import path from "path";
-import { User } from "../models/schemas/user.js"
+import { User } from "../models/schemas/user.js";
 import { nanoid } from "nanoid";
 const JWT_SECRET = I4JumDxGwP07hcyRioQtOxC4ndn6D36q;
 // BASE_URL = http://localhost:3000
-import { HttpError } from "../helpers/httpError.js"
+import { HttpError } from "../helpers/httpError.js";
 
 import gravatar from "gravatar";
 const avatarsPath = path.resolve("public", "avatar");
-;
-
 const signup = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
@@ -36,7 +34,6 @@ const signup = async (req, res) => {
   res.status(201).json({
     email: newUser.email,
     password: newUser.password,
-    
   });
 };
 const signin = async (req, res) => {
@@ -66,7 +63,6 @@ const signin = async (req, res) => {
     token,
     user: {
       email: user.email,
-     
     },
   });
 };
@@ -81,7 +77,7 @@ const getCurrent = async (req, res) => {
     birthday,
     userName,
   });
-}
+};
 const logout = async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: "" });
@@ -96,7 +92,13 @@ const updateUser = async (req, res) => {
   const avatarURL = path.join("avatar", filename);
   await User.findByIdAndUpdate(_id, { avatarURL });
   const { path: oldPath, filename } = req.file;
-  await User.findByIdAndUpdate( _id , {email, skype, phone, userName, birthday});
+  await User.findByIdAndUpdate(_id, {
+    email,
+    skype,
+    phone,
+    userName,
+    birthday,
+  });
   res.json({
     avatarURL,
     email,

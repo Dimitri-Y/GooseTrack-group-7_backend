@@ -2,7 +2,7 @@ import express from "express";
 import logger from "morgan";
 import cors from "cors";
 import dotenv from "dotenv";
-import tasksRouter from "./routes/tasks-router.js";
+import tasksRouter from "./routes/api/tasks-router.js";
 import reviewsRouter from "./routes/api/reviews-router.js";
 import swaggerUi from "swagger-ui-express";
 import * as fs from "fs";
