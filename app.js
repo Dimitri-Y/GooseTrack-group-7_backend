@@ -30,5 +30,5 @@ app.use((err, req, res, next) => {
 
 app.use("/api/reviews", reviewsRouter);
 app.use("/api/tasks", tasksRouter);
-
+app.use("/api/statistics", statRouter);
 export default app;
