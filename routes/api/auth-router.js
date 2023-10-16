@@ -6,17 +6,18 @@ import authenticate from "../../middlewares/authenticate.js";
 import upload from "../../middlewares/uploud.js";
 import resizeAvatar from "../../middlewares/resizeAvatar.js";
 import validateBody from "../../decorators/validateBody.js";
+import isValidId from "../../middlewares/isValidId.js";
 
 authRouter.post(
   "/auth/register",
   validateBody(addSchema),
-  isValidid,
+  isValidId,
   authController.signup
 );
 authRouter.post(
   "/auth/login",
   validateBody(logSchema),
-  isValidid,
+  isValidId,
   authController.signin
 );
 
