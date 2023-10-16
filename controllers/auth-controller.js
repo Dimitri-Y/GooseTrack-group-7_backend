@@ -4,8 +4,7 @@ import fs from "fs/promises";
 import path from "path";
 import { User } from "../models/schemas/user.js";
 import { nanoid } from "nanoid";
-const JWT_SECRET = I4JumDxGwP07hcyRioQtOxC4ndn6D36q;
-// BASE_URL = http://localhost:3000
+const { JWT_SECRET, BASE_URL } = process.env;
 import { HttpError } from "../helpers/httpError.js";
 
 import gravatar from "gravatar";
