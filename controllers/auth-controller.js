@@ -2,14 +2,14 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import fs from "fs/promises";
 import path from "path";
-import { User } from "../models/schemas/user.js"
+import { User } from "../models/schemas/user.js";
 import { nanoid } from "nanoid";
 const { JWT_SECRET, BASE_URL } = process.env;
-import { HttpError } from "../helpers/httpError.js"
-
+import HttpError from "../helpers/httpError.js";
 import gravatar from "gravatar";
+import ctrlWrapper from "../decorators/ctrlWrapper.js";
+
 const avatarsPath = path.resolve("public", "avatar");
-;
 
 const signup = async (req, res) => {
   const { email } = req.body;
@@ -35,9 +35,9 @@ const signup = async (req, res) => {
   res.status(201).json({
     email: newUser.email,
     password: newUser.password,
-    
   });
 };
+
 const signin = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -65,7 +65,6 @@ const signin = async (req, res) => {
     token,
     user: {
       email: user.email,
-     
     },
   });
 };
@@ -80,13 +79,15 @@ const getCurrent = async (req, res) => {
     birthday,
     userName,
   });
-}
+};
+
 const logout = async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: "" });
 
   res.status(204);
 };
+
 const updateUser = async (req, res) => {
   const { _id } = req.user;
   const { email, skype, phone, userName, birthday } = req.body;
@@ -95,7 +96,13 @@ const updateUser = async (req, res) => {
   const avatarURL = path.join("avatar", filename);
   await User.findByIdAndUpdate(_id, { avatarURL });
   const { path: oldPath, filename } = req.file;
-  await User.findByIdAndUpdate( _id , {email, skype, phone, userName, birthday});
+  await User.findByIdAndUpdate(_id, {
+    email,
+    skype,
+    phone,
+    userName,
+    birthday,
+  });
   res.json({
     avatarURL,
     email,
@@ -107,9 +114,9 @@ const updateUser = async (req, res) => {
 };
 
 export default {
-  signup,
-  signin,
-  getCurrent,
-  logout,
-  updateUser,
+  signup: ctrlWrapper(signup),
+  signin: ctrlWrapper(signin),
+  getCurrent: ctrlWrapper(getCurrent),
+  logout: ctrlWrapper(logout),
+  updateUser: ctrlWrapper(updateUser),
 };

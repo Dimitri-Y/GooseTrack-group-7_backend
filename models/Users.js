@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose';
-import { handlleSaveError, runValidateAtupdate } from './hooks.js';
+import { Schema, model } from "mongoose";
+import { handlleSaveError, runValidateAtUpdate } from "./hooks.js";
 
 export const validRegex =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -48,9 +48,9 @@ const userSchema = new Schema(
   { versionKey: false, timestamps: true }
 );
 
-userSchema.pre('findOneAndUpdate', runValidateAtupdate);
-userSchema.post('findOneAndUpdate', handlleSaveError);
-userSchema.post('save', handlleSaveError);
+userSchema.pre("findOneAndUpdate", runValidateAtUpdate);
+userSchema.post("findOneAndUpdate", handlleSaveError);
+userSchema.post("save", handlleSaveError);
 
-const User = model('user', userSchema);
+const User = model("User", userSchema);
 export default User;
