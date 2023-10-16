@@ -4,9 +4,13 @@ import cors from "cors";
 import dotenv from "dotenv";
 import tasksRouter from "./routes/api/tasks-router.js";
 import reviewsRouter from "./routes/api/reviews-router.js";
+import statRouter from "./routes/api/statistics-router.js";
+import authRouter from "./routes/api/auth-router.js";
 import swaggerUi from "swagger-ui-express";
 import * as fs from "fs";
+
 const swaggerDocument = JSON.parse(fs.readFileSync("./swagger.json"));
+
 // import swaggerDocument from "./swagger.json" assert { type: "json" };
 dotenv.config();
 
@@ -27,7 +31,7 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message });
 });
-
+app.use("/api", authRouter);
 app.use("/api/reviews", reviewsRouter);
 app.use("/api/tasks", tasksRouter);
 app.use("/api/statistics", statRouter);
