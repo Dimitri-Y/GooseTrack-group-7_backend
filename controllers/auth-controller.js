@@ -6,6 +6,7 @@ import { User } from "../models/schemas/user.js";
 import { nanoid } from "nanoid";
 const { JWT_SECRET, BASE_URL } = process.env;
 import HttpError from "../helpers/httpError.js";
+import sendEmail from "../helpers/sendEmail.js";
 import gravatar from "gravatar";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
