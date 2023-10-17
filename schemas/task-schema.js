@@ -1,29 +1,38 @@
 import Joi from 'joi';
 
 const taskAddSchema = Joi.object({
-  body: Joi.string().required().messages({
-    'any.required': `"title" must be exist`,
-  }),
-  progress: Joi.string().required().messages({
-    'any.required': `"email" must be exist`,
-  }),
-  importance: Joi.string().required().messages({
-    'any.required': `"phone" must be exist`,
-  }),
-  owner: Joi.boolean(),
+  title: Joi.string().max(250).required(),
+  start: Joi.string()
+    .regex(/^\d{2}:\d{2}$/)
+    .required(),
+  end: Joi.string()
+    .regex(/^\d{2}:\d{2}$/)
+    .required(),
+  priority: Joi.string().valid('low', 'medium', 'high').required(),
+  date: Joi.string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .required(),
+  category: Joi.string().valid('to-do', 'in-progress', 'done').required(),
+  // owner: Joi.string().required(),
 });
 
 const taskPutSchema = Joi.object({
-  name: Joi.string(),
-  email: Joi.string(),
-  phone: Joi.string(),
-  favorite: Joi.boolean(),
+  title: Joi.string(),
+  start: Joi.string().regex(/^\d{2}:\d{2}$/),
+  end: Joi.string().regex(/^\d{2}:\d{2}$/),
+  priority: Joi.string().valid('low', 'medium', 'high'),
+  date: Joi.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  category: Joi.string().valid('to-do', 'in-progress', 'done'),
+  owner: Joi.string().required(),
 });
 
 const taskUpdateSchema = Joi.object({
-  favorite: Joi.boolean().required().messages({
-    'any.required': `missing field favorite`,
-  }),
+  title: Joi.string(),
+  end: Joi.string().regex(/^\d{2}:\d{2}$/),
+  priority: Joi.string().valid('low', 'medium', 'high'),
+  date: Joi.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  category: Joi.string().valid('to-do', 'in-progress', 'done'),
+  owner: Joi.string().required(),
 });
 export default {
   taskAddSchema,

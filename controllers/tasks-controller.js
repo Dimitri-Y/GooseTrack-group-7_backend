@@ -1,22 +1,18 @@
-import HttpError from "../helpers/httpError.js";
-import ctrlWrapper from "../decorators/ctrlWrapper.js";
-import Task from "../models/task.js";
+import HttpError from '../helpers/httpError.js';
+import ctrlWrapper from '../decorators/ctrlWrapper.js';
+import Task from '../models/task.js';
+import taskEndValidate from '../helpers/taskEndValidate.js';
 
 const getAll = async (req, res) => {
-  const { date, month } = req.query;
-
-  const filteredTasks = Task.filter((task) => {
-    const taskDate = task.date.split("-");
-    return taskDate[0] === date && taskDate[1] === month;
-  });
-
-  res.json({ tasks: filteredTasks });
+  const result = await Task.find();
+  console.log(result || 'no result');
+  res.json(result);
 };
 
 const getById = async (req, res) => {
   const { _id: owner } = req.user;
-  const { contactId } = req.params;
-  const result = await Contact.findOne({ _id: contactId, owner });
+  const { tasktId } = req.params;
+  const result = await Task.findOne({ _id: tasktId, owner });
   if (!result) {
     throw HttpError(404);
   }
@@ -24,16 +20,20 @@ const getById = async (req, res) => {
 };
 
 const add = async (req, res) => {
-  const { _id: owner } = req.user;
-  const result = await Task.create({ ...req.body, owner });
+  // const { _id: owner } = req.user;
+  const { start, end } = req.body;
+  taskEndValidate(start, end);
+  const result = await Task.create({ ...req.body });
   res.status(201).json(result);
 };
 
 const updateById = async (req, res) => {
   const { _id: owner } = req.user;
-  const { contactId } = req.params;
-  const result = await Contact.findOneAndUpdate(
-    { _id: contactId, owner },
+  const { tasktId } = req.params;
+  const { start, end } = req.body;
+  taskEndValidate(start, end);
+  const result = await Task.findOneAndUpdate(
+    { _id: tasktId, owner },
     req.body,
     {
       new: true,
@@ -44,8 +44,8 @@ const updateById = async (req, res) => {
 
 const deleteById = async (req, res) => {
   const { _id: owner } = req.user;
-  const { contactId } = req.params;
-  const result = await Contact.findOneAndDelete({ _id: contactId, owner });
+  const { tasktId } = req.params;
+  const result = await Task.findOneAndDelete({ _id: tasktId, owner });
   if (!result) {
     throw HttpError(404);
   }

@@ -1,22 +1,24 @@
-import express from "express";
-import taskController from "../../controllers/tasks-controller.js";
-import authenticate from "../../middlewares/authenticate.js";
-import taskValidate from "../../middlewares/task-validation.js";
-import isValidId from "../../middlewares/isValidId.js";
+import express from 'express';
+import taskController from '../../controllers/tasks-controller.js';
+import {
+  authenticate,
+  taskValidate,
+  isValidId,
+} from '../../middlewares/index.js';
 
 const tasksRouter = express.Router();
-tasksRouter.use(authenticate);
+// tasksRouter.use(authenticate);
 
-tasksRouter.get("/tasks", taskController.getAll);
+tasksRouter.get('/', taskController.getAll);
 
-// tasksRouter.post('/tasks', taskValidate.addContactValidate, taskController.add);
+tasksRouter.post('/', taskController.add);
 
-// tasksRouter.patch(
-//   '/tasks/:Id',
-//   isValidId,
-//   taskValidate.patchContactValidate,
-//   taskController.updateById
-// );
-tasksRouter.delete("/tasks/:Id", isValidId, taskController.deleteById);
+tasksRouter.patch(
+  '/:Id',
+  isValidId,
+  taskValidate.patchTaskValidate,
+  taskController.updateById
+);
+tasksRouter.delete('/:Id', isValidId, taskController.deleteById);
 
 export default tasksRouter;
