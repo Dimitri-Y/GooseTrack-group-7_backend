@@ -3,15 +3,31 @@ import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import Task from '../models/task.js';
 import taskEndValidate from '../helpers/taskEndValidate.js';
 
-const getAll = async (req, res) => {
-  const { date, month } = req.query;
+const getAll = async (req, res, next) => {
+  const { _id } = req.user;
 
-  const filteredTasks = Task.filter((task) => {
-    const taskDate = task.date.split('-');
-    return taskDate[0] === date && taskDate[1] === month;
+  const { filteredDateFrom, filteredDateTo } = req.query;
+
+  const filters = {
+    owner: _id,
+    date: {
+      $gte: filteredDateFrom,
+      $lte: filteredDateTo,
+    },
+  };
+  const tasksList = await Task.find(filters).populate(
+    'owner',
+    '_id name email'
+  );
+
+  res.status(200).json({
+    status: 'success',
+    code: 200,
+    data: {
+      result: tasksList,
+      start: filteredDateFrom,
+    },
   });
-
-  res.json({ tasks: filteredTasks });
 };
 
 const getById = async (req, res) => {
