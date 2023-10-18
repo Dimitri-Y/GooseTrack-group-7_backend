@@ -13,12 +13,12 @@ tasksRouter.get('/', taskController.getAll);
 
 tasksRouter.post('/', taskController.add);
 
-tasksRouter.patch(
+tasksRouter.put(
   '/:Id',
-  isValidId,
+  // isValidId,
   taskValidate.patchTaskValidate,
   taskController.updateById
 );
-tasksRouter.delete('/:Id', isValidId, taskController.deleteById);
+tasksRouter.delete('/:Id', taskController.deleteById);
 
 export default tasksRouter;

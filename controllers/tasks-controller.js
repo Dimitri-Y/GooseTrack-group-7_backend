@@ -3,10 +3,31 @@ import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import Task from '../models/task.js';
 import taskEndValidate from '../helpers/taskEndValidate.js';
 
-const getAll = async (req, res) => {
-  const result = await Task.find();
-  console.log(result || 'no result');
-  res.json(result);
+const getAll = async (req, res, next) => {
+  const { _id } = req.user;
+
+  const { filteredFrom, filteredTo } = req.query;
+
+  const filters = {
+    owner: _id,
+    date: {
+      $gte: filteredFrom,
+      $lte: filteredTo,
+    },
+  };
+  const tasksList = await Task.find(filters).populate(
+    'owner',
+    '_id name email'
+  );
+
+  res.status(200).json({
+    status: 'success',
+    code: 200,
+    data: {
+      result: tasksList,
+      start: filteredFrom,
+    },
+  });
 };
 
 const getById = async (req, res) => {
@@ -20,10 +41,10 @@ const getById = async (req, res) => {
 };
 
 const add = async (req, res) => {
-  // const { _id: owner } = req.user;
+  const { _id: owner } = req.user;
   const { start, end } = req.body;
   taskEndValidate(start, end);
-  const result = await Task.create({ ...req.body });
+  const result = await Task.create({ ...req.body, owner });
   res.status(201).json(result);
 };
 

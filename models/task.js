@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { handlleSaveError } from './hooks.js';
+import defaultDateString from '../helpers/defaultDate.js';
 
 const taskSchema = Schema(
   {
@@ -25,18 +26,18 @@ const taskSchema = Schema(
     },
     priority: {
       type: String,
-      required: true,
       enum: ['low', 'medium', 'high'],
+      default: 'low',
     },
     date: {
       type: String,
-      required: true,
+      default: defaultDateString,
       match: /^\d{4}-\d{2}-\d{2}$/,
     },
     category: {
       type: String,
-      required: true,
       enum: ['to-do', 'in-progress', 'done'],
+      default: 'to-do',
     },
     owner: {
       type: Schema.Types.ObjectId,
