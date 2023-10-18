@@ -4,13 +4,15 @@ import fs from "fs/promises";
 import path from "path";
 import { User } from "../models/schemas/user.js";
 import { nanoid } from "nanoid";
-const { JWT_SECRET, BASE_URL } = process.env;
 import HttpError from "../helpers/httpError.js";
 // import sendEmail from "../helpers/sendEmail.js";
 import gravatar from "gravatar";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
-
 const avatarsPath = path.resolve("public", "avatar");
+
+import dotenv from "dotenv";
+dotenv.config();
+const { JWT_SECRET, BASE_URL } = process.env;
 
 const signup = async (req, res) => {
   const { email, password, userName } = req.body;
