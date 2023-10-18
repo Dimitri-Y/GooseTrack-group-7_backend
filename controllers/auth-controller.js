@@ -13,18 +13,23 @@ import ctrlWrapper from "../decorators/ctrlWrapper.js";
 const avatarsPath = path.resolve("public", "avatar");
 
 const signup = async (req, res) => {
-  const { email } = req.body;
+  const { email, password, userName } = req.body;
   const user = await User.findOne({ email });
   if (user) {
     throw HttpError(409, "Email already exist");
   }
   const hashPassword = await bcrypt.hash(password, 10);
+  const avatarURL = gravatar.url(email);
   const verificationCode = nanoid();
   const newUser = await User.create({
-    ...req.body,
+    userName,
+    email,
     avatarURL,
     password: hashPassword,
     verificationCode,
+    phone: "",
+    skype: "",
+    birthday: "",
   });
   const verifyEmail = {
     to: email,
@@ -36,6 +41,11 @@ const signup = async (req, res) => {
   res.status(201).json({
     email: newUser.email,
     password: newUser.password,
+    verificationCode: newUser.verificationCode,
+    phone: newUser.phone,
+    skype: newUser.skype,
+    birthday: newUser.birthday,
+    userName: newUser.userName,
   });
 };
 
