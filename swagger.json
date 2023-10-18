@@ -2,13 +2,15 @@
   "openapi": "3.0.1",
   "info": {
     "version": "2.0.2",
-    "title": "Swagger test",
+    "title": "API documentation",
     "description": "Showing off swagger-ui-express",
     "license": {
       "name": "MIT",
       "url": "https://opensource.org/licenses/MIT"
     }
   },
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "servers": [
     {
       "url": "http://localhost:3000"
@@ -32,10 +34,38 @@
     "/auth/register": {
       "post": {
         "tags": ["Auth"],
-        "description": "",
+        "summary": "User registration",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationRequest"
+              }
+            }
+          }
+        },
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "409": {
+            "description": "Email already exist",
+            "content": {}
           }
         }
       }
@@ -43,11 +73,36 @@
     "/auth/login": {
       "post": {
         "tags": ["Auth"],
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
+        "summary": "User authentication",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Login's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
           }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": { "description": "Email or password is wrong", "content": {} }
         }
       }
     },
@@ -84,7 +139,7 @@
         }
       }
     },
-    "/": {
+    "/reviews": {
       "get": {
         "tags": ["Reviews"],
         "description": "",
@@ -95,7 +150,7 @@
         }
       }
     },
-    "/own": {
+    "/reviews/own": {
       "get": {
         "tags": ["Reviews"],
         "description": "",
@@ -152,6 +207,119 @@
           "default": {
             "description": ""
           }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RegistrationRequest": {
+        "type": "object",
+        "required": ["email", "password", "userName"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          }
+        }
+      },
+      "RegistrationResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "User's email",
+              "format": "email"
+            },
+            "password": {
+              "type": "string",
+              "description": "User's password",
+              "example": "qwerty123"
+            },
+            "userName": {
+              "type": "number",
+              "description": "User's name",
+              "example": "Maks_Marzinkevich"
+            }
+          }
+        },
+        "example": [
+          {
+            "email": "admin@gmail.com",
+            "userName": "admin",
+            "password": "qwerty123"
+          },
+          {
+            "email": "Natalia@gmail.com",
+            "userName": "Natalia",
+            "password": "qwerty12334r4r4"
+          }
+        ]
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "User's email",
+              "format": "email"
+            },
+            "password": {
+              "type": "string",
+              "description": "User's password",
+              "example": "qwerty123"
+            },
+            "userName": {
+              "type": "number",
+              "description": "User's name",
+              "example": "Maks_Marzinkevich"
+            }
+          }
+        },
+        "example": [
+          {
+            "email": "admin@gmail.com",
+            "userName": "admin",
+            "password": "qwerty123"
+          },
+          {
+            "email": "Natalia@gmail.com",
+            "userName": "Natalia",
+            "password": "qwerty12334r4r4"
+          }
+        ]
+      },
+      "securitySchemes": {
+        "Bearer": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
         }
       }
     }
