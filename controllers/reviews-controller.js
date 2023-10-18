@@ -5,7 +5,8 @@ import HttpsError from "../helpers/httpError.js";
 const getAllReviews = async (req, res) => {
   const result = await Review.find();
   res.json(result);
-  /* #swagger.description ='Get all reviews'
+  /* #swagger.tags = ['Reviews'] 
+  #swagger.description ='Get all reviews'
  } */
   /* #swagger.responses[200] = {
      description: 'Get successful',
@@ -19,7 +20,8 @@ const getOwnReview = async (req, res) => {
   if (!result) {
     throw HttpsError(404, "Not found");
   }
-  /* #swagger.description ='Get all reviews for user'
+  /* #swagger.tags = ['Reviews'] 
+  #swagger.description ='Get all reviews for user'
   } */
   /* #swagger.responses[200] = {
      description: 'Get successful',
@@ -32,7 +34,8 @@ const addReview = async (req, res) => {
   const { _id: owner } = req.user;
   const result = await Review.create({ ...req.body, owner });
   res.status(201).json(result);
-  /* #swagger.description =.parameters['addReview'] = {
+  /* #swagger.tags = ['Reviews'] 
+  #swagger.description =.parameters['addReview'] = {
    in: 'body',
    description: 'add new review',
    type: 'object',
@@ -54,7 +57,8 @@ const updateReview = async (req, res) => {
     throw HttpsError(404, "Not found");
   }
   res.json(result);
-  /* #swagger.parameters['id'] = {
+  /* #swagger.tags = ['Reviews'] 
+  #swagger.parameters['id'] = {
    description: 'Existing review ID',
    type: 'string',
    required: true
