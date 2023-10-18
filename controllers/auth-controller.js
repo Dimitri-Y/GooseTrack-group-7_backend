@@ -4,13 +4,15 @@ import fs from "fs/promises";
 import path from "path";
 import { User } from "../models/schemas/user.js";
 import { nanoid } from "nanoid";
-const { JWT_SECRET, BASE_URL } = process.env;
 import HttpError from "../helpers/httpError.js";
-import sendEmail from "../helpers/sendEmail.js";
+// import sendEmail from "../helpers/sendEmail.js";
 import gravatar from "gravatar";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
-
 const avatarsPath = path.resolve("public", "avatar");
+
+import dotenv from "dotenv";
+dotenv.config();
+const { JWT_SECRET, BASE_URL } = process.env;
 
 const signup = async (req, res) => {
   const { email, password, userName } = req.body;
@@ -26,25 +28,25 @@ const signup = async (req, res) => {
     email,
     avatarURL,
     password: hashPassword,
-    verificationCode,
+    // verificationCode,
     phone: "",
     skype: "",
     birthday: "",
   });
-  const verifyEmail = {
-    to: email,
-    subject: "Verify email",
-    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationCode}">Click to verify email</a>`,
-  };
-  await sendEmail(verifyEmail);
+  // const verifyEmail = {
+  //   to: email,
+  //   subject: "Verify email",
+  //   html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationCode}">Click to verify email</a>`,
+  // };
+  // await sendEmail(verifyEmail);
 
   res.status(201).json({
     email: newUser.email,
     password: newUser.password,
-    verificationCode: newUser.verificationCode,
-    phone: newUser.phone,
-    skype: newUser.skype,
-    birthday: newUser.birthday,
+    // verificationCode: newUser.verificationCode,
+    phone: " ",
+    skype: " ",
+    birthday: " ",
     userName: newUser.userName,
   });
 };
@@ -56,9 +58,9 @@ const signin = async (req, res) => {
   if (!user) {
     throw HttpError(401, "Email or password is wrong");
   }
-  if (!user.verify) {
-    throw HttpError(404, "User not found");
-  }
+  // if (!user.verify) {
+  //   throw HttpError(404, "User not found");
+  // }
 
   const comparePassword = await bcrypt.compare(password, user.password);
   if (!comparePassword) {

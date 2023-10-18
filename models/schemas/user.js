@@ -12,15 +12,15 @@ const userSchema = new Schema(
     },
     phone: {
       type: String,
-      required: true,
+      // required: true,
     },
     skype: {
       type: String,
-      required: true,
+      // required: true,
     },
     birthday: {
       type: String,
-      required: true,
+      // required: true,
     },
     password: {
       type: String,
@@ -43,6 +43,7 @@ userSchema.pre("findOneAndUpdate", runValidateAtUpdate);
 userSchema.post("findOneAndUpdate", handlleSaveError);
 
 export const registerSchema = Joi.object({
+  userName: Joi.string().min(3).required(),
   email: Joi.string().pattern(emailRegexp),
   password: Joi.string().min(6).required(),
 });

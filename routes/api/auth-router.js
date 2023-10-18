@@ -1,6 +1,7 @@
 import express from "express";
 const authRouter = express.Router();
-import { addSchema, logSchema } from "../../models/schemas/schema.js";
+// import { addSchema, logSchema } from "../../models/schemas/schema.js";
+import { registerSchema, authSchema } from "../../models/schemas/user.js";
 import authController from "../../controllers/auth-controller.js";
 import authenticate from "../../middlewares/authenticate.js";
 import upload from "../../middlewares/uploud.js";
@@ -10,16 +11,10 @@ import isValidId from "../../middlewares/isValidId.js";
 
 authRouter.post(
   "/auth/register",
-  validateBody(addSchema),
-  isValidId,
+  validateBody(registerSchema),
   authController.signup
 );
-authRouter.post(
-  "/auth/login",
-  validateBody(logSchema),
-  isValidId,
-  authController.signin
-);
+authRouter.post("/auth/login", validateBody(authSchema), authController.signin);
 
 authRouter.get("/users/current", authenticate, authController.getCurrent);
 authRouter.post("/auth/logout", authenticate, authController.logout);
