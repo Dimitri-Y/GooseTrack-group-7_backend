@@ -10,7 +10,7 @@ import userField from "../helpers/userField.js";
 // import sendEmail from "../helpers/sendEmail.js";
 import gravatar from "gravatar";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
-const avatarsPath = path.resolve("public", "avatar");
+const avatarsDir = path.join("public", "avatar");
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -127,18 +127,20 @@ const logout = async (req, res) => {
 //     birthday,
 //   });
 // };
+
 const updateUser = async (req, res) => {
+  
   if (!req.user)
     throw HttpError(401, "Missing header with authorization token");
 
   const { _id } = req.user;
 
-  const { path: tempUpload, originalname } = req.file;
+  const { path: oldPath, originalname } = req.file;
 
   const filename = `${_id}_${originalname}`;
   const resultUpload = path.join(avatarsDir, filename);
 
-  await fs.rename(tempUpload, resultUpload);
+  await fs.rename(oldPath, resultUpload);
 
   const resizeFile = await Jimp.read(resultUpload);
   await resizeFile.resize(250, 250).write(resultUpload);
