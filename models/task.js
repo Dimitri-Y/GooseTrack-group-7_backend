@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { handlleSaveError } from './hooks.js';
+import defaultDateString from '../helpers/defaultDate.js';
 
 const taskSchema = Schema(
   {
@@ -7,41 +8,46 @@ const taskSchema = Schema(
       type: String,
       required: true,
       maxlength: 250,
+      required: true,
     },
     start: {
       type: String,
-      required: true,
+      default: '09:00',
       match: /^\d{2}:\d{2}$/,
+      required: true,
     },
     end: {
       type: String,
-      required: true,
       validate: {
         validator: function (value) {
           return /^\d{2}:\d{2}$/.test(value) && value > this.start;
         },
         message: 'End time must be in HH:mm format and greater than start time',
       },
+      default: '23:00',
+      required: true,
     },
     priority: {
       type: String,
-      required: true,
       enum: ['low', 'medium', 'high'],
+      default: 'low',
+      required: true,
     },
     date: {
       type: String,
-      required: true,
+      default: defaultDateString,
       match: /^\d{4}-\d{2}-\d{2}$/,
+      required: true,
     },
     category: {
       type: String,
-      required: true,
       enum: ['to-do', 'in-progress', 'done'],
+      default: 'to-do',
+      required: true,
     },
     owner: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
-      // required: true,
+      ref: 'user',
     },
   },
   { versionKey: false, timestamps: true }
