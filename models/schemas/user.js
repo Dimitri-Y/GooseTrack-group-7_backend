@@ -3,37 +3,56 @@ import Joi from "joi";
 import { handlleSaveError, runValidateAtUpdate } from "../hooks.js";
 
 const emailRegexp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+const phoneRegexp = /^\d{2}\s\(\d{3}\)\s\d{3}\s\d{2}\s\d{2}$/;
+const birthdayRegexp = /^\d{2}\/\d{2}\/\d{4}$/;
 
 const userSchema = new Schema(
   {
     userName: {
       type: String,
-      required: true,
-    },
-    phone: {
-      type: String,
-      required: true,
-    },
-    skype: {
-      type: String,
-      required: true,
-    },
-    birthday: {
-      type: String,
-      required: true,
+      required: [true, "Need set username"],
     },
     password: {
       type: String,
-      required: [true, "Set password for userSchema"],
+      minLength: 6,
+      required: [true, "Need set a password for user"],
     },
     email: {
       type: String,
       match: emailRegexp,
-      required: [true, "Email is required"],
       unique: true,
+      required: [true, "Need set an Email "],
+    },
+    phone: {
+      type: String,
+      match: [phoneRegexp, "Invalid phone number format."],
+      default: "",
     },
 
-    token: String,
+    birthday: {
+      type: String,
+      match: birthdayRegexp,
+      default: "",
+    },
+    skype: {
+      type: String,
+      default: "",
+    },
+    token: {
+      type: String,
+      default: "",
+    },
+    avatarURL: {
+      type: String,
+    },
+    // verify: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    // verificationCode: {
+    //   type: String,
+    //   required: [true, "Verify token is required"],
+    // },
   },
   { versionKey: false, timestamps: true }
 );

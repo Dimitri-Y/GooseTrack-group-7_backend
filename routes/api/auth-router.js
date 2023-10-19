@@ -11,15 +11,16 @@ import isValidId from "../../middlewares/isValidId.js";
 authRouter.post(
   "/auth/register",
   validateBody(addSchema),
-  isValidId,
+  // isValidId,
   authController.signup
 );
 authRouter.post(
   "/auth/login",
   validateBody(logSchema),
-  isValidId,
+  // isValidId,
   authController.signin
 );
+// authRouter.post("/users/verify", authenticate, authController.resendVerifyEmail);
 
 authRouter.get("/users/current", authenticate, authController.getCurrent);
 authRouter.post("/auth/logout", authenticate, authController.logout);
