@@ -32,6 +32,7 @@
     "nodemailer": "^6.9.6",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
+    "path": "^0.12.7",
     "swagger-autogen-doc": "^1.0.4",
     "swagger-codegen": "^0.1.1",
     "swagger-ui-express": "^5.0.0"

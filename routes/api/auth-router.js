@@ -20,7 +20,7 @@ authRouter.post("/auth/logout", authenticate, authController.logout);
 authRouter.patch(
   "/users/edit",
   authenticate,
-  upload.single("avatars"),
+  upload.single("avatar"),
   resizeAvatar,
   authController.updateUser
 );
