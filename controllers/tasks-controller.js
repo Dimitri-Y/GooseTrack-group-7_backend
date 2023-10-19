@@ -1,15 +1,14 @@
 import HttpError from '../helpers/httpError.js';
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
 import Task from '../models/task.js';
-import taskEndValidate from '../helpers/taskEndValidate.js';
 
 const getAll = async (req, res, next) => {
-  const { _id } = req.user;
+  const { _id: owner } = req.user;
 
   const { filteredFrom, filteredTo } = req.query;
 
   const filters = {
-    owner: _id,
+    owner,
     date: {
       $gte: filteredFrom,
       $lte: filteredTo,
@@ -32,8 +31,8 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res) => {
   const { _id: owner } = req.user;
-  const { tasktId } = req.params;
-  const result = await Task.findOne({ _id: tasktId, owner });
+  const { taskId } = req.params;
+  const result = await Task.findOne({ _id: taskId, owner });
   if (!result) {
     throw HttpError(404);
   }
@@ -42,31 +41,23 @@ const getById = async (req, res) => {
 
 const add = async (req, res) => {
   const { _id: owner } = req.user;
-  const { start, end } = req.body;
-  taskEndValidate(start, end);
   const result = await Task.create({ ...req.body, owner });
   res.status(201).json(result);
 };
 
 const updateById = async (req, res) => {
   const { _id: owner } = req.user;
-  const { tasktId } = req.params;
-  const { start, end } = req.body;
-  taskEndValidate(start, end);
-  const result = await Task.findOneAndUpdate(
-    { _id: tasktId, owner },
-    req.body,
-    {
-      new: true,
-    }
-  );
+  const { taskId } = req.params;
+  const result = await Task.findOneAndUpdate({ _id: taskId, owner }, req.body, {
+    new: true,
+  });
   res.status(201).json(result);
 };
 
 const deleteById = async (req, res) => {
   const { _id: owner } = req.user;
-  const { tasktId } = req.params;
-  const result = await Task.findOneAndDelete({ _id: tasktId, owner });
+  const { taskId } = req.params;
+  const result = await Task.findOneAndDelete({ _id: taskId, owner });
   if (!result) {
     throw HttpError(404);
   }

@@ -1,25 +1,25 @@
-import { Schema, model } from "mongoose";
-import Joi from "joi";
-import { handlleSaveError } from "../hooks.js";
+import { Schema, model } from 'mongoose';
+import Joi from 'joi';
+import { handlleSaveError } from '../hooks.js';
 
 const reviewSchema = new Schema(
   {
     name: {
       type: String,
-      required: [true, "Set name for contact"],
+      required: [true, 'Set name for contact'],
     },
     comment: {
       type: String,
     },
     owner: {
       type: Schema.Types.ObjectId,
-      ref: "user",
+      ref: 'user',
     },
   },
   { versionKey: false, timestamps: true }
 );
 
-reviewSchema.post("save", handlleSaveError);
+reviewSchema.post('save', handlleSaveError);
 
 export const addSchema = Joi.object({
   name: Joi.string().required(),
@@ -29,6 +29,6 @@ export const addSchema = Joi.object({
 export const changeSchema = Joi.object({
   name: Joi.string(),
   comment: Joi.string(),
-}).or("name", "comment");
+}).or('name', 'comment');
 
-export const Review = model("review", reviewSchema);
+export const Review = model('review', reviewSchema);

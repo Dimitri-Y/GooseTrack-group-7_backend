@@ -7,18 +7,18 @@ import {
 } from '../../middlewares/index.js';
 
 const tasksRouter = express.Router();
-// tasksRouter.use(authenticate);
+tasksRouter.use(authenticate);
 
 tasksRouter.get('/', taskController.getAll);
 
-tasksRouter.post('/', taskController.add);
+tasksRouter.post('/', taskValidate.addTaskValidate, taskController.add);
 
 tasksRouter.put(
-  '/:Id',
-  // isValidId,
+  '/:taskId',
+  isValidId,
   taskValidate.patchTaskValidate,
   taskController.updateById
 );
-tasksRouter.delete('/:Id', taskController.deleteById);
+tasksRouter.delete('/:taskId', taskController.deleteById);
 
 export default tasksRouter;
