@@ -128,31 +128,84 @@ const logout = async (req, res) => {
 //   });
 // };
 
+// const updateUser = async (req, res) => {
+//   if (!req.user)
+//     throw HttpError(401, "Missing header with authorization token");
+
+//   const { _id } = req.user;
+
+//   const { path: oldPath, originalname } = req.file;
+
+//   const filename = `${_id}_${originalname}`;
+//   const resultUpload = path.join(avatarsDir, filename);
+
+//   await fs.rename(oldPath, resultUpload);
+
+//   const resizeFile = await Jimp.read(resultUpload);
+//   await resizeFile.resize(250, 250).write(resultUpload);
+
+//   const avatarURL = path.join("avatar", filename);
+
+//   const body = req.body;
+//   console.log(body)
+
+//   body.avatarURL = `${BASE_URL_BACK}/${avatarURL.replace("\\", "/")}`;
+
+//   const updatedUser = await User.findByIdAndUpdate(_id, body, { new: true });
+//   if (!updatedUser) throw HttpError(404, "User not found");
+
+//   const sendUserData = userField(updatedUser);
+
+//   res.status(200).json({
+//     status: "OK",
+//     code: 200,
+//     user: sendUserData,
+//   });
+// };
+
 const updateUser = async (req, res) => {
-  
-  if (!req.user)
-    throw HttpError(401, "Missing header with authorization token");
+  if (!req.user) {
+    return res
+      .status(401)
+      .json({ message: "Missing header with authorization token" });
+  }
 
   const { _id } = req.user;
 
-  const { path: oldPath, originalname } = req.file;
+  const { userName, phone, birthday, skype, email } = req.body;
 
-  const filename = `${_id}_${originalname}`;
-  const resultUpload = path.join(avatarsDir, filename);
+  let avatarURL;
+  if (req.file) {
+    const { path: oldPath, originalname } = req.file;
+    const filename = `${_id}_${originalname}`;
+    const resultUpload = path.join(avatarsDir, filename);
+    await fs.rename(oldPath, resultUpload);
 
-  await fs.rename(oldPath, resultUpload);
+    const resizeFile = await Jimp.read(resultUpload);
+    await resizeFile.resize(250, 250).write(resultUpload);
 
-  const resizeFile = await Jimp.read(resultUpload);
-  await resizeFile.resize(250, 250).write(resultUpload);
+    avatarURL = `${BASE_URL_BACK}/avatar/${filename}`;
+  }
 
-  const avatarURL = path.join("avatar", filename);
+  const updateData = {
+    userName,
+    phone,
+    birthday,
+    skype,
+    email,
+  };
 
-  const body = req.body;
+  if (avatarURL) {
+    updateData.avatarURL = avatarURL;
+  }
 
-  body.avatarURL = `${BASE_URL_BACK}/${avatarURL.replace("\\", "/")}`;
+  const updatedUser = await User.findByIdAndUpdate(_id, updateData, {
+    new: true,
+  });
 
-  const updatedUser = await User.findByIdAndUpdate(_id, body, { new: true });
-  if (!updatedUser) throw HttpError(404, "User not found");
+  if (!updatedUser) {
+    return res.status(404).json({ message: "User not found" });
+  }
 
   const sendUserData = userField(updatedUser);
 

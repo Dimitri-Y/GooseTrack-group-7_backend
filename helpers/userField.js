@@ -1,8 +1,8 @@
 const userField = (user) => {
-  currentUser.password = undefined;
-  currentUser.token = undefined;
-//   currentUser.verificationToken = undefined;
-
+  user.password = undefined;
+  user.token = undefined;
+  //   currentUser.verificationToken = undefined;
+  console.log(user);
   return user;
 };
 
