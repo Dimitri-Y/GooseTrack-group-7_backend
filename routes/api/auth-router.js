@@ -21,7 +21,7 @@ authRouter.patch(
   "/users/edit",
   authenticate,
   upload.single("avatar"),
-  resizeAvatar,
+  // resizeAvatar,
   authController.updateUser
 );
 export default authRouter;
