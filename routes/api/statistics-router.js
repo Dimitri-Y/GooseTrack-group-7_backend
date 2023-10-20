@@ -1,7 +1,6 @@
 import express from "express";
 const statRouter = express.Router();
-statRouter.get("/");
-statRouter.post("/");
-statRouter.patch("/");
-statRouter.delete("/");
+import ctrl from "../../controllers/statistics-controller";
+statRouter.get('/', ctrl.getAllTasks);
+statRouter.get('/date', ctrl.getTasksByDate);
 export default statRouter;
