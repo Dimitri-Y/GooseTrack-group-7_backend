@@ -1,4 +1,5 @@
 import ctrlWrapper from '../decorators/ctrlWrapper.js';
+import HttpError from '../helpers/httpError.js';
 import Task from '../models/task.js';
 
 const getAllTasks = async (req, res, next) => {
@@ -30,23 +31,36 @@ const getAllTasks = async (req, res, next) => {
 
 const getTasksByDate = async (req, res) => {
   const { _id: owner } = req.user;
-  const { date } = req.params;
-  const result = await Task.find({ date: date, owner });
+  const { period, date } = req.params;
+  let startDate, endDate;
+  if (period === 'day') {
+    startDate = new Date(date);
+    startDate.setHours(0, 0, 0);
+    endDate = new Date(date);
+    endDate.setHours(23, 59, 59);
+  } else if (period === 'month') {
+    startDate = new Date(date);
+    startDate.setDate(1);
+    endDate = new Date(date);
+    endDate.setMonth(endDate.getMonth() + 1);
+    endDate.setDate(0);
+  } else {
+   throw HttpError(400);
+  }
+  const result = await Task.find({
+    date: { 
+      $gte: startDate, 
+      $lte: endDate 
+    }, owner,
+  });
   if (!result) {
     throw HttpError(404);
 
   }
   res.json(result);
 };
-
+//прошу перевірки оцього ось
 export default {
     getAllTasks: ctrlWrapper(getAllTasks),
     getDayTasks: ctrlWrapper(getTasksByDate),
   };
-  // const currentDate = new Date();
-// const year = currentDate.getFullYear();
-// const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-// const day = String(currentDate.getDate()).padStart(2, '0');
-// const defaultDateString = `${year}-${month}-${day}`;
-// export default defaultDateString;
-  
