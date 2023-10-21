@@ -1,7 +1,7 @@
 import express from "express";
 const authRouter = express.Router();
 // import { addSchema, logSchema } from "../../models/schemas/schema.js";
-import { registerSchema, authSchema } from "../../models/schemas/user.js";
+import { registerSchema, authSchema, emailSchema} from "../../models/schemas/user.js";
 import authController from "../../controllers/auth-controller.js";
 import authenticate from "../../middlewares/authenticate.js";
 import upload from "../../middlewares/uploud.js";
@@ -14,6 +14,17 @@ authRouter.post(
   authController.signup
 );
 authRouter.post("/auth/login", validateBody(authSchema), authController.signin);
+authRouter.get(
+  "/users/verify:verificationCode",
+
+  authController.verify
+);
+authRouter.post(
+  "/verify",
+  validateBody(emailSchema),
+  authenticate,
+  authController.resendVerifyEmail
+);
 
 authRouter.get("/users/current", authenticate, authController.getCurrent);
 authRouter.post("/auth/logout", authenticate, authController.logout);
