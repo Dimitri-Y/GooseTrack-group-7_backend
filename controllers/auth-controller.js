@@ -14,7 +14,7 @@ const avatarsDir = path.resolve("public", "avatar");
 
 import dotenv from "dotenv";
 dotenv.config();
-const { JWT_SECRET, BASE_URL, UKR_NET_EMAIL_FROM} = process.env;
+const { JWT_SECRET, BASE_URL, UKR_NET_EMAIL_FROM } = process.env;
 
 const signup = async (req, res) => {
   const { email, password, userName } = req.body;
@@ -35,7 +35,7 @@ const signup = async (req, res) => {
     skype: "",
     birthday: "",
   });
- 
+
   await sendEmail(verificationCode, email);
 
   res.status(201).json({
@@ -96,7 +96,7 @@ const logout = async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: "" });
 
-  res.status(204);
+  res.status(204).json({ message: "No content" });
 };
 
 const updateUser = async (req, res) => {
@@ -115,18 +115,16 @@ const updateUser = async (req, res) => {
     phone,
     birthday,
     skype,
-    email
+    email,
   };
-
 
   let avatarURL;
   if (req.file) {
-  
-    const {path: oldPath, filename} = req.file;
-   const newAvatar = await Jimp.read(oldPath);
-   await newAvatar.resize(250, 250);
+    const { path: oldPath, filename } = req.file;
+    const newAvatar = await Jimp.read(oldPath);
+    await newAvatar.resize(250, 250);
 
-   const newPath = path.join(avatarsDir, filename);
+    const newPath = path.join(avatarsDir, filename);
     await newAvatar.writeAsync(newPath);
     await fs.unlink(oldPath);
     const avatar = path.join("avatar", filename);
@@ -140,8 +138,8 @@ const updateUser = async (req, res) => {
   if (!updatedUser) {
     return res.status(404).json({ message: "User not found" });
   }
-  console.log(req.body)
-  console.log(req.file)
+  console.log(req.body);
+  console.log(req.file);
 
   const sendUserData = userField(updatedUser);
 
@@ -197,5 +195,5 @@ export default {
   logout: ctrlWrapper(logout),
   updateUser: ctrlWrapper(updateUser),
   verify: ctrlWrapper(verify),
-  resendVerifyEmail:ctrlWrapper(resendVerifyEmail)
+  resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
 };
