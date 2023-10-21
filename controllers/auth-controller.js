@@ -10,7 +10,7 @@ import userField from "../helpers/userField.js";
 // import sendEmail from "../helpers/sendEmail.js";
 import gravatar from "gravatar";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
-const avatarsDir = path.join("public", "avatar");
+const avatarsDir = path.resolve("public", "avatar");
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -103,66 +103,6 @@ const logout = async (req, res) => {
   res.status(204);
 };
 
-// const updateUser = async (req, res) => {
-//   const { _id } = req.user;
-//   const { email, skype, phone, userName, birthday } = req.body;
-//   const newPath = path.join(avatarsPath, filename);
-//   await fs.rename(oldPath, newPath);
-//   const avatarURL = path.join("avatar", filename);
-//   await User.findByIdAndUpdate(_id, { avatarURL });
-//   const { path: oldPath, filename } = req.file;
-//   await User.findByIdAndUpdate(_id, {
-//     email,
-//     skype,
-//     phone,
-//     userName,
-//     birthday,
-//   });
-//   res.json({
-//     avatarURL,
-//     email,
-//     skype,
-//     phone,
-//     userName,
-//     birthday,
-//   });
-// };
-
-// const updateUser = async (req, res) => {
-//   if (!req.user)
-//     throw HttpError(401, "Missing header with authorization token");
-
-//   const { _id } = req.user;
-
-//   const { path: oldPath, originalname } = req.file;
-
-//   const filename = `${_id}_${originalname}`;
-//   const resultUpload = path.join(avatarsDir, filename);
-
-//   await fs.rename(oldPath, resultUpload);
-
-//   const resizeFile = await Jimp.read(resultUpload);
-//   await resizeFile.resize(250, 250).write(resultUpload);
-
-//   const avatarURL = path.join("avatar", filename);
-
-//   const body = req.body;
-//   console.log(body)
-
-//   body.avatarURL = `${BASE_URL_BACK}/${avatarURL.replace("\\", "/")}`;
-
-//   const updatedUser = await User.findByIdAndUpdate(_id, body, { new: true });
-//   if (!updatedUser) throw HttpError(404, "User not found");
-
-//   const sendUserData = userField(updatedUser);
-
-//   res.status(200).json({
-//     status: "OK",
-//     code: 200,
-//     user: sendUserData,
-//   });
-// };
-
 const updateUser = async (req, res) => {
   if (!req.user) {
     return res
@@ -174,29 +114,35 @@ const updateUser = async (req, res) => {
 
   const { userName, phone, birthday, skype, email } = req.body;
 
-  let avatarURL;
-  if (req.file) {
-    const { path: oldPath, originalname } = req.file;
-    const filename = `${_id}_${originalname}`;
-    const resultUpload = path.join(avatarsDir, filename);
-    await fs.rename(oldPath, resultUpload);
-
-    const resizeFile = await Jimp.read(resultUpload);
-    await resizeFile.resize(250, 250).write(resultUpload);
-
-    avatarURL = `${BASE_URL_BACK}/avatar/${filename}`;
-  }
-
   const updateData = {
     userName,
     phone,
     birthday,
     skype,
-    email,
+    email
   };
 
-  if (avatarURL) {
-    updateData.avatarURL = avatarURL;
+
+  let avatarURL;
+  if (req.file) {
+    // const { path: oldPath, originalname } = req.file;
+    // const filename = `${_id}_${originalname}`;
+    // const resultUpload = path.join(avatarsDir, filename);
+    // await fs.rename(oldPath, resultUpload);
+
+    // const resizeFile = await Jimp.read(resultUpload);
+    // await resizeFile.resize(250, 250).write(resultUpload);
+
+    // avatarURL = `${BASE_URL_BACK}/avatar/${filename}`;
+    const {path: oldPath, filename} = req.file;
+   const newAvatar = await Jimp.read(oldPath);
+   await newAvatar.resize(250, 250);
+
+   const newPath = path.join(avatarsDir, filename);
+    await newAvatar.writeAsync(newPath);
+    await fs.unlink(oldPath);
+    const avatar = path.join("avatar", filename);
+    updateData.avatarURL = avatar;
   }
 
   const updatedUser = await User.findByIdAndUpdate(_id, updateData, {
@@ -206,6 +152,8 @@ const updateUser = async (req, res) => {
   if (!updatedUser) {
     return res.status(404).json({ message: "User not found" });
   }
+  console.log(req.body)
+  console.log(req.file)
 
   const sendUserData = userField(updatedUser);
 

@@ -19,9 +19,8 @@ authRouter.get("/users/current", authenticate, authController.getCurrent);
 authRouter.post("/auth/logout", authenticate, authController.logout);
 authRouter.patch(
   "/users/edit",
+  upload.single("avatarURL"),
   authenticate,
-  upload.single("avatar"),
-  // resizeAvatar,
   authController.updateUser
 );
 export default authRouter;
