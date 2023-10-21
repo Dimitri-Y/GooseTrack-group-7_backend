@@ -1,7 +1,11 @@
 import express from "express";
 const authRouter = express.Router();
 // import { addSchema, logSchema } from "../../models/schemas/schema.js";
-import { registerSchema, authSchema } from "../../models/schemas/user.js";
+import {
+  registerSchema,
+  authSchema,
+  updateSchema,
+} from "../../models/schemas/user.js";
 import authController from "../../controllers/auth-controller.js";
 import authenticate from "../../middlewares/authenticate.js";
 import upload from "../../middlewares/uploud.js";
@@ -21,6 +25,7 @@ authRouter.patch(
   "/users/edit",
   upload.single("avatarURL"),
   authenticate,
+  validateBody(updateSchema),
   authController.updateUser
 );
 export default authRouter;
