@@ -100,7 +100,7 @@ const logout = async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: "" });
 
-  res.status(204);
+  res.status(204).json({ message: "No content" });
 };
 
 const updateUser = async (req, res) => {
@@ -119,9 +119,8 @@ const updateUser = async (req, res) => {
     phone,
     birthday,
     skype,
-    email
+    email,
   };
-
 
   let avatarURL;
   if (req.file) {
@@ -134,11 +133,11 @@ const updateUser = async (req, res) => {
     // await resizeFile.resize(250, 250).write(resultUpload);
 
     // avatarURL = `${BASE_URL_BACK}/avatar/${filename}`;
-    const {path: oldPath, filename} = req.file;
-   const newAvatar = await Jimp.read(oldPath);
-   await newAvatar.resize(250, 250);
+    const { path: oldPath, filename } = req.file;
+    const newAvatar = await Jimp.read(oldPath);
+    await newAvatar.resize(250, 250);
 
-   const newPath = path.join(avatarsDir, filename);
+    const newPath = path.join(avatarsDir, filename);
     await newAvatar.writeAsync(newPath);
     await fs.unlink(oldPath);
     const avatar = path.join("avatar", filename);
@@ -152,8 +151,8 @@ const updateUser = async (req, res) => {
   if (!updatedUser) {
     return res.status(404).json({ message: "User not found" });
   }
-  console.log(req.body)
-  console.log(req.file)
+  console.log(req.body);
+  console.log(req.file);
 
   const sendUserData = userField(updatedUser);
 
