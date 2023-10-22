@@ -1,10 +1,10 @@
 import nodemailer from "nodemailer";
 import "dotenv/config";
 
-const { UKR_NET_EMAIL_FROM, UKR_NET_EMAIL_PASSWORD } = process.env;
+const { UKR_NET_EMAIL_FROM, UKR_NET_EMAIL_PASSWORD, BASE_URL } = process.env;
 
 const nodemailerConfig = {
-  host: "stmp.ukr.net",
+  host: "smtp.ukr.net",
   port: 465,
   secure: true,
   auth: {
@@ -14,9 +14,15 @@ const nodemailerConfig = {
 };
 
 const transport = nodemailer.createTransport(nodemailerConfig);
-const sendEmail = (data) => {
-  const email = { ...data, from: UKR_NET_EMAIL_FROM };
-  return transport.sendMail(email);
+const sendEmail = (verificationCode, email) => {
+   const verifyEmail = {
+     from: UKR_NET_EMAIL_FROM,
+     to: email,
+     subject: "Verify email",
+     html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationCode}">Click to verify email</a>`,
+   };
+  const letter = { ...verifyEmail };
+  return transport.sendMail(letter);
 };
 
 export default sendEmail;

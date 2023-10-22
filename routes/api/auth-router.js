@@ -5,6 +5,7 @@ import {
   registerSchema,
   authSchema,
   updateSchema,
+  emailSchema,
 } from "../../models/schemas/user.js";
 import authController from "../../controllers/auth-controller.js";
 import authenticate from "../../middlewares/authenticate.js";
@@ -18,6 +19,17 @@ authRouter.post(
   authController.signup
 );
 authRouter.post("/auth/login", validateBody(authSchema), authController.signin);
+authRouter.get(
+  "/users/verify/:verificationCode",
+
+  authController.verify
+);
+authRouter.post(
+  "/users/verify",
+  validateBody(emailSchema),
+  
+  authController.resendVerifyEmail
+);
 
 authRouter.get("/users/current", authenticate, authController.getCurrent);
 authRouter.post("/auth/logout", authenticate, authController.logout);
