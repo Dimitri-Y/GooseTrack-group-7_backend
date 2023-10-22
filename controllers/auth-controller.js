@@ -81,7 +81,7 @@ const signin = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { email, phone, skype, birthday, userName } = req.user;
+  const { email, phone, skype, birthday, userName, avatarURL } = req.user;
 
   res.json({
     email,
@@ -89,6 +89,7 @@ const getCurrent = async (req, res) => {
     skype,
     birthday,
     userName,
+    avatarURL,
   });
 };
 
