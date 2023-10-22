@@ -34,6 +34,8 @@ const signup = async (req, res) => {
     phone: "",
     skype: "",
     birthday: "",
+    
+    
   });
 
   await sendEmail(verificationCode, email);
@@ -46,6 +48,8 @@ const signup = async (req, res) => {
     skype: " ",
     birthday: " ",
     userName: newUser.userName,
+
+    
   });
 };
 
@@ -57,7 +61,7 @@ const signin = async (req, res) => {
     throw HttpError(401, "Email or password is wrong");
   }
   if (!user.verify) {
-    throw HttpError(404, "User not found");
+    throw HttpError(409, "This is not verificate");
   }
 
   const comparePassword = await bcrypt.compare(password, user.password);
@@ -158,7 +162,7 @@ const verify = async (req, res) => {
 
   await User.findByIdAndUpdate(user._id, {
     verify: true,
-    verificationCode: "Verify",
+    verificationCode: "",
   });
 
   res.status(200).json({
@@ -178,7 +182,7 @@ const resendVerifyEmail = async (req, res) => {
   if (user.email !== req.user.email)
     throw HttpError(401, "Email not found in this user");
 
-  await sendEmail(user.verificationToken, email);
+  await sendEmail(user.verificationCode, email);
 
   res.status(200).json({
     status: "OK",

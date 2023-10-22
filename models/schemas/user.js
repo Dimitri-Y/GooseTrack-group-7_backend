@@ -37,14 +37,15 @@ const userSchema = new Schema(
       type: String,
     },
 
-    token: String,
     verify: {
       type: Boolean,
       default: false,
+      required: true,
     },
     verificationCode: {
       type: String,
     },
+    token: String,
   },
   { versionKey: false, timestamps: true }
 );

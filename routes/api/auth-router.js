@@ -20,14 +20,14 @@ authRouter.post(
 );
 authRouter.post("/auth/login", validateBody(authSchema), authController.signin);
 authRouter.get(
-  "/users/verify:verificationCode",
+  "/users/verify/:verificationCode",
 
   authController.verify
 );
 authRouter.post(
-  "/verify",
+  "/users/verify",
   validateBody(emailSchema),
-  authenticate,
+  
   authController.resendVerifyEmail
 );
 
