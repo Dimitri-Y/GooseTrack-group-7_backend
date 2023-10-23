@@ -16,7 +16,7 @@
       "url": "http://localhost:3000/api"
     },
     {
-      "url": "https://goose-track-backend-deployment-q70i.onrender.com/"
+      "url": "https://goose-track-backend-deployment-q70i.onrender.com/api"
     }
   ],
   "tags": [
