@@ -161,22 +161,36 @@ const verify = async (req, res) => {
 const resendVerifyEmail = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
-
   if (!user) throw HttpError(404, "Email not found");
 
   if (user.verify) throw HttpError(400, "Email already verify");
-
-  if (user.email !== req.user.email)
-    throw HttpError(401, "Email not found in this user");
-
-  await sendEmail(user.verificationCode, email);
-
-  res.status(200).json({
-    status: "OK",
-    code: 200,
-    message: "Verify email resend success",
-    email,
-  });
+  // if (user.email !== req.user.email)
+  //   throw HttpError(401, "Email not found in this user");
+  if (user.verificationCode) {
+    await sendEmail(user.verificationCode, email);
+    res.status(200).json({
+      status: "OK",
+      code: 200,
+      message: "Verify email resend success",
+      email,
+    });
+  } else {
+    const verificationCode = nanoid();
+    const result = await User.findOneAndUpdate(
+      user.email,
+      { verificationCode: verificationCode },
+      {
+        new: true,
+      }
+    );
+    await sendEmail(User.verificationCode, email);
+    res.status(200).json({
+      status: "OK",
+      code: 200,
+      message: "create new verificationCode. Verify email resend success",
+      email,
+    });
+  }
 };
 
 export default {
