@@ -13,7 +13,7 @@
   "produces": ["application/json"],
   "servers": [
     {
-      "url": "http://localhost:3000"
+      "url": "http://localhost:3000/api"
     }
   ],
   "tags": [
@@ -28,15 +28,18 @@
     {
       "name": "Reviews",
       "description": "Reviews endpoints"
+    },
+    {
+      "name": "Statistics",
+      "description": "Statistics endpoints"
     }
   ],
+  "schemes": ["http", "https"],
   "paths": {
     "/auth/register": {
       "post": {
         "tags": ["Auth"],
         "summary": "User registration",
-        "parameters": [],
-        "security": [{ "Bearer": [] }],
         "requestBody": {
           "description": "Registration's object",
           "required": true,
@@ -74,8 +77,6 @@
       "post": {
         "tags": ["Auth"],
         "summary": "User authentication",
-        "parameters": [],
-        "security": [{ "Bearer": [] }],
         "requestBody": {
           "description": "Login's object",
           "required": true,
@@ -88,7 +89,7 @@
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "",
             "content": {
               "application/json": {
@@ -102,17 +103,37 @@
             "description": "Bad request (invalid request body)",
             "content": {}
           },
-          "401": { "description": "Email or password is wrong", "content": {} }
+          "401": {
+            "description": "Email or password is wrong",
+            "content": {}
+          }
         }
       }
     },
     "/users/current": {
       "get": {
         "tags": ["Auth"],
+        "summary": "get info about user",
         "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getCurrentResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized.Invalid or not exists token",
+            "content": {}
           }
         }
       }
@@ -120,6 +141,172 @@
     "/auth/logout": {
       "post": {
         "tags": ["Auth"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "user logout",
+        "description": "",
+        "responses": {
+          "204": {
+            "description": "no content",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized.Invalid or not exists token",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/edit": {
+      "patch": {
+        "tags": ["Auth"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "edit user's information",
+        "description": "",
+        "requestBody": {
+          "description": "Edit user's form",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/EditUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getCurrentResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized.Invalid or not exists token",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/verify/{verificationCode}": {
+      "get": {
+        "tags": ["Auth"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "verificationCode"
+          }
+        ],
+        "summary": "get status for verification",
+        "description": "get status for verification",
+        "responses": {
+          "200": {
+            "description": "Email verification successful",
+            "content": {}
+          },
+          "404": {
+            "description": "User not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/verify": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "resend  for verification",
+        "description": "",
+        "requestBody": {
+          "description": "Login's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "User's email",
+                    "format": "email",
+                    "example": "goosetrack@ukr.net"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email verification successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "User's email",
+                      "format": "email",
+                      "example": "goosetrack@ukr.net"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "message",
+                      "example": "Verify email resend success"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Email already verify",
+            "content": {}
+          },
+          "401": {
+            "description": "Email not found in this user",
+            "content": {}
+          },
+          "404": {
+            "description": "Email not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/tasks/": {
+      "get": {
+        "tags": ["Tasks"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "tags": ["Tasks"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -128,9 +315,42 @@
         }
       }
     },
-    "/users/edit": {
-      "patch": {
-        "tags": ["Auth"],
+    "/tasks/{taskId}": {
+      "get": {
+        "tags": ["Tasks"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "tags": ["Tasks"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Tasks"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -153,6 +373,11 @@
     "/reviews/own": {
       "get": {
         "tags": ["Reviews"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -162,6 +387,11 @@
       },
       "post": {
         "tags": ["Reviews"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -171,6 +401,11 @@
       },
       "patch": {
         "tags": ["Reviews"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -180,6 +415,11 @@
       },
       "delete": {
         "tags": ["Reviews"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -188,9 +428,9 @@
         }
       }
     },
-    "/tasks": {
+    "/statistics": {
       "get": {
-        "tags": ["Tasks"],
+        "tags": ["Statistics"],
         "description": "",
         "responses": {
           "default": {
@@ -199,9 +439,9 @@
         }
       }
     },
-    "/tasks/{Id}": {
-      "delete": {
-        "tags": ["Tasks"],
+    "/statistics/date": {
+      "get": {
+        "tags": ["Statistics"],
         "description": "",
         "responses": {
           "default": {
@@ -212,6 +452,16 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Bearer token to access these api endpoints",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
     "schemas": {
       "RegistrationRequest": {
         "type": "object",
@@ -220,13 +470,24 @@
           "email": {
             "type": "string",
             "description": "User's email",
-            "format": "email"
+            "format": "email",
+            "example": "goosetrack@ukr.net"
+          },
+          "userName": {
+            "type": "string",
+            "description": "User's name (min 3)",
+            "example": "admin"
           },
           "password": {
             "type": "string",
-            "description": "User's password",
-            "example": "qwerty123"
+            "description": "User's password(min 6,A-Z,a-z,0-9 required)",
+            "example": "Qqwerty1234"
           }
+        },
+        "example": {
+          "email": "goosetrack@ukr.net",
+          "userName": "admin",
+          "password": "Qqwerty1234"
         }
       },
       "RegistrationResponse": {
@@ -242,27 +503,20 @@
             "password": {
               "type": "string",
               "description": "User's password",
-              "example": "qwerty123"
+              "example": "Qqwerty1234"
             },
             "userName": {
               "type": "number",
               "description": "User's name",
-              "example": "Maks_Marzinkevich"
+              "example": "Maks Marzinkevich"
             }
           }
         },
-        "example": [
-          {
-            "email": "admin@gmail.com",
-            "userName": "admin",
-            "password": "qwerty123"
-          },
-          {
-            "email": "Natalia@gmail.com",
-            "userName": "Natalia",
-            "password": "qwerty12334r4r4"
-          }
-        ]
+        "example": {
+          "email": "goosetrack@ukr.net",
+          "userName": "admin",
+          "password": "Qqwerty1234"
+        }
       },
       "LoginRequest": {
         "type": "object",
@@ -271,12 +525,13 @@
           "email": {
             "type": "string",
             "description": "User's email",
-            "format": "email"
+            "format": "email",
+            "example": "goosetrack@ukr.net"
           },
           "password": {
             "type": "string",
-            "description": "User's password",
-            "example": "qwerty123"
+            "description": "User's password(min 6,A-Z,a-z,0-9 required)",
+            "example": "Qqwerty1234"
           }
         }
       },
@@ -288,38 +543,94 @@
             "email": {
               "type": "string",
               "description": "User's email",
-              "format": "email"
+              "format": "email",
+              "example": "goosetrack@ukr.net"
             },
-            "password": {
+            "token": {
               "type": "string",
-              "description": "User's password",
-              "example": "qwerty123"
-            },
-            "userName": {
-              "type": "number",
-              "description": "User's name",
-              "example": "Maks_Marzinkevich"
+              "description": "User's token "
             }
           }
         },
-        "example": [
-          {
-            "email": "admin@gmail.com",
-            "userName": "admin",
-            "password": "qwerty123"
-          },
-          {
-            "email": "Natalia@gmail.com",
-            "userName": "Natalia",
-            "password": "qwerty12334r4r4"
-          }
-        ]
+        "example": {
+          "email": "goosetrack@ukr.net",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MzNiYWE1MTdhYWFmYzQ0NTg3YzIyMCIsImlhdCI6MTY5Nzg4ODkzOCwiZXhwIjoxNjk3OTcxNzM4fQ.0228XN-00ilueuKid8OSD0E1eNn11fvF0k3rqXlczEw"
+        }
       },
-      "securitySchemes": {
-        "Bearer": {
-          "type": "http",
-          "scheme": "bearer",
-          "bearerFormat": "JWT"
+      "getCurrentResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "User's email",
+              "format": "email",
+              "example": "goosetrack@ukr.net"
+            },
+            "userName": {
+              "type": "string",
+              "description": "User's name (min 3)",
+              "example": "admin"
+            },
+            "phone": {
+              "type": "string",
+              "description": "User's phone (+380 + ... 9 number)",
+              "example": "+380931234567"
+            },
+            "skype": {
+              "type": "string",
+              "description": "User's skype",
+              "example": "nothing"
+            },
+            "birthday": {
+              "type": "string",
+              "description": "User's birthday (XXXX-XX-XX)",
+              "example": "1980-01-01"
+            },
+            "avatarURL": {
+              "type": "string",
+              "description": "User's avatar, url in cloud",
+              "example": "https://res.cloudinary.com/di2tkymun/image/upload/v1698065862/misc/photo_2022-06-07_23-54-03.jpg"
+            }
+          }
+        }
+      },
+      "EditUserRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "example": "goosetrack@ukr.net"
+          },
+          "userName": {
+            "type": "string",
+            "description": "User's name (min 3)",
+            "example": "admin"
+          },
+          "phone": {
+            "type": "string",
+            "description": "User's phone (+380 + ... 9 number)",
+            "example": "+380931234567"
+          },
+          "skype": {
+            "type": "string",
+            "description": "User's skype",
+            "example": "nothing"
+          },
+          "birthday": {
+            "type": "string",
+            "description": "User's birthday (XXXX-XX-XX)",
+            "example": "1980-01-01"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "User's avatar file,later url in cloud",
+            "format": "binary",
+            "example": "file.jpg"
+          }
         }
       }
     }

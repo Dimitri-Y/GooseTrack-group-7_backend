@@ -14,19 +14,20 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
-    // Determine the folder based on file properties or request data
     let folder;
     if (file.fieldname === "avatar") {
       folder = "avatars";
-    } else if (file.fieldname === "documents") {
-      folder = "documents";
+    } else if (file.fieldname === "recipePhoto") {
+      folder = "recipes";
     } else {
       folder = "misc";
     }
+
     return {
       folder: folder,
-      allowed_formats: ["jpg", "png"], // Adjust the allowed formats as needed
-      public_id: file.originalname, // Use original filename as the public ID
+      allowed_formats: ["jpg", "png"],
+      public_id: file.originalname,
+      transformation: [{ width: 700, height: 700, crop: "fill" }],
     };
   },
 });
@@ -34,25 +35,3 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage });
 
 export default upload;
-
-// import path from "path";
-
-// const destination = path.resolve("temp");
-
-// const storage = multer.diskStorage({
-//   destination,
-//   filename: (req, file, cb) => {
-//     const uniquePrefix = `${Date.now()}_${Math.round(Math.random() * 1e9)}`;
-//     const filename = `${uniquePrefix}_${file.originalname}`;
-//     cb(null, filename);
-//   },
-// });
-
-// const limits = {
-//   fileSize: 1024 * 1024 * 5,
-// };
-
-// const upload = multer({
-//   storage,
-//   limits,
-// });
