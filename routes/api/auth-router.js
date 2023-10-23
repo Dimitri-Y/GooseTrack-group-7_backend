@@ -27,7 +27,7 @@ authRouter.get(
 authRouter.post(
   "/users/verify",
   validateBody(emailSchema),
-  
+
   authController.resendVerifyEmail
 );
 
@@ -35,8 +35,8 @@ authRouter.get("/users/current", authenticate, authController.getCurrent);
 authRouter.post("/auth/logout", authenticate, authController.logout);
 authRouter.patch(
   "/users/edit",
-  upload.single("avatarURL"),
   authenticate,
+  upload.single("avatarURL"),
   validateBody(updateSchema),
   authController.updateUser
 );

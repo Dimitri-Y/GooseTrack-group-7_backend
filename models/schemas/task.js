@@ -1,6 +1,6 @@
-import { Schema, model } from 'mongoose';
-import { handlleSaveError } from './hooks.js';
-import defaultDateString from '../helpers/defaultDate.js';
+import { Schema, model } from "mongoose";
+import { handlleSaveError } from "../hooks.js";
+import defaultDateString from "../../helpers/defaultDate.js";
 
 const taskSchema = Schema(
   {
@@ -11,7 +11,7 @@ const taskSchema = Schema(
     },
     start: {
       type: String,
-      default: '09:00',
+      default: "09:00",
       match: /^\d{2}:\d{2}$/,
       required: true,
     },
@@ -21,15 +21,15 @@ const taskSchema = Schema(
         validator: function (value) {
           return /^\d{2}:\d{2}$/.test(value) && value > this.start;
         },
-        message: 'End time must be in HH:mm format and greater than start time',
+        message: "End time must be in HH:mm format and greater than start time",
       },
-      default: '23:00',
+      default: "23:00",
       required: true,
     },
     priority: {
       type: String,
-      enum: ['low', 'medium', 'high'],
-      default: 'low',
+      enum: ["low", "medium", "high"],
+      default: "low",
       required: true,
     },
     date: {
@@ -40,20 +40,20 @@ const taskSchema = Schema(
     },
     category: {
       type: String,
-      enum: ['to-do', 'in-progress', 'done'],
-      default: 'to-do',
+      enum: ["to-do", "in-progress", "done"],
+      default: "to-do",
       required: true,
     },
     owner: {
       type: Schema.Types.ObjectId,
-      ref: 'user',
+      ref: "user",
     },
   },
   { versionKey: false, timestamps: true }
 );
 
-taskSchema.post('save', handlleSaveError);
+taskSchema.post("save", handlleSaveError);
 
-const Task = model('task', taskSchema);
+const Task = model("task", taskSchema);
 
 export default Task;

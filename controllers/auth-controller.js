@@ -34,8 +34,6 @@ const signup = async (req, res) => {
     phone: "",
     skype: "",
     birthday: "",
-    
-    
   });
 
   await sendEmail(verificationCode, email);
@@ -48,8 +46,6 @@ const signup = async (req, res) => {
     skype: " ",
     birthday: " ",
     userName: newUser.userName,
-
-    
   });
 };
 
@@ -125,15 +121,14 @@ const updateUser = async (req, res) => {
 
   let avatarURL;
   if (req.file) {
-    const { path: oldPath, filename } = req.file;
-    const newAvatar = await Jimp.read(oldPath);
-    await newAvatar.resize(250, 250);
-
-    const newPath = path.join(avatarsDir, filename);
-    await newAvatar.writeAsync(newPath);
-    await fs.unlink(oldPath);
-    const avatar = path.join("avatar", filename);
-    updateData.avatarURL = avatar;
+    const { path } = req.file;
+    // const newAvatar = await Jimp.read(oldPath);
+    // await newAvatar.resize(250, 250);
+    // const newPath = path.join(avatarsDir, filename);
+    // await newAvatar.writeAsync(newPath);
+    // await fs.unlink(oldPath);
+    // const avatar = path.join("avatar", filename);
+    updateData.avatarURL = path;
   }
 
   const updatedUser = await User.findByIdAndUpdate(_id, updateData, {
@@ -143,9 +138,6 @@ const updateUser = async (req, res) => {
   if (!updatedUser) {
     return res.status(404).json({ message: "User not found" });
   }
-  console.log(req.body);
-  console.log(req.file);
-
   const sendUserData = userField(updatedUser);
 
   res.status(200).json({

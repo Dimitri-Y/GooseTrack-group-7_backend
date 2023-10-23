@@ -1,5 +1,9 @@
 import app from "./app.js";
 import mongoose from "mongoose";
+
+import dotenv from "dotenv";
+dotenv.config();
+
 class Server {
   constructor() {
     this.app = app;
@@ -10,7 +14,7 @@ class Server {
     mongoose
       .connect(DB_HOST)
       .then(() => {
-        app.listen(PORT, () => {
+        app.listen(process.env.PORT || 3000, () => {
           console.log("Database connection successful");
         });
       })

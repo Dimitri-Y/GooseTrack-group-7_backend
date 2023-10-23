@@ -1,6 +1,6 @@
-import HttpError from '../helpers/httpError.js';
-import ctrlWrapper from '../decorators/ctrlWrapper.js';
-import Task from '../models/task.js';
+import HttpError from "../helpers/httpError.js";
+import ctrlWrapper from "../decorators/ctrlWrapper.js";
+import Task from "../models/schemas/task.js";
 
 const getAll = async (req, res, next) => {
   const { _id: owner } = req.user;
@@ -15,12 +15,12 @@ const getAll = async (req, res, next) => {
     },
   };
   const tasksList = await Task.find(filters).populate(
-    'owner',
-    '_id name email'
+    "owner",
+    "_id name email"
   );
 
   res.status(200).json({
-    status: 'success',
+    status: "success",
     code: 200,
     data: {
       result: tasksList,
