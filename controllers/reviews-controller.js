@@ -3,7 +3,9 @@ import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpsError from "../helpers/httpError.js";
 
 const getAllReviews = async (req, res) => {
-  const result = await Review.find();
+  const result = await Review.find()
+    .populate("owner", "userName avatarURL")
+    .exec();
   res.json(result);
   /* #swagger.tags = ['Reviews'] 
   #swagger.description ='Get all reviews'

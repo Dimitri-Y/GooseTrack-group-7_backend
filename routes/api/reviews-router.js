@@ -3,15 +3,26 @@ const reviewsRouter = express.Router();
 import { addSchema, changeSchema } from "../../models/schemas/review.js";
 import validateBody from "../../decorators/validateBody.js";
 import ctrl from "../../controllers/reviews-controller.js";
+import authenticate from "../../middlewares/authenticate.js";
 
 reviewsRouter.get("/", ctrl.getAllReviews);
 
-reviewsRouter.get("/own", ctrl.getOwnReview);
+reviewsRouter.get("/own", authenticate, ctrl.getOwnReview);
 
-reviewsRouter.post("/own", validateBody(addSchema), ctrl.addReview);
+reviewsRouter.post(
+  "/own",
+  authenticate,
+  validateBody(addSchema),
+  ctrl.addReview
+);
 
-reviewsRouter.patch("/own", validateBody(changeSchema), ctrl.updateReview);
+reviewsRouter.patch(
+  "/own",
+  authenticate,
+  validateBody(changeSchema),
+  ctrl.updateReview
+);
 
-reviewsRouter.delete("/own", ctrl.deleteReview);
+reviewsRouter.delete("/own", authenticate, ctrl.deleteReview);
 
 export default reviewsRouter;
