@@ -33,7 +33,7 @@ const getOwnReview = async (req, res) => {
 };
 
 const addReview = async (req, res) => {
-  const owner = req._id;
+  const { _id: owner } = req.user;
   const result = await Review.create({ ...req.body, owner });
   res.status(201).json(result);
   /* #swagger.tags = ['Reviews'] 
@@ -51,7 +51,7 @@ const addReview = async (req, res) => {
 };
 
 const updateReview = async (req, res) => {
-  const owner = req._id;
+  const { _id: owner } = req.user;
   const result = await Review.findOneAndUpdate(owner, req.body, {
     new: true,
   });
@@ -79,8 +79,8 @@ const updateReview = async (req, res) => {
 };
 
 const deleteReview = async (req, res) => {
-  const reviewId = req._id;
-  const result = await Review.findOneAndDelete(reviewId);
+  const { _id: owner } = req.user;
+  const result = await Review.findOneAndDelete({owner});
   if (!result) {
     throw HttpsError(404, "Not found");
   }
