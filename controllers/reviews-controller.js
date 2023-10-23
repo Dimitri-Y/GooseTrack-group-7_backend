@@ -50,7 +50,7 @@ const addReview = async (req, res) => {
 
 const updateReview = async (req, res) => {
   const owner = req._id;
-  const result = await Review.findOneAndUpdate( owner, req.body, {
+  const result = await Review.findOneAndUpdate(owner, req.body, {
     new: true,
   });
   if (!result) {
