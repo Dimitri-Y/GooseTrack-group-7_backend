@@ -122,12 +122,6 @@ const updateUser = async (req, res) => {
   let avatarURL;
   if (req.file) {
     const { path } = req.file;
-    // const newAvatar = await Jimp.read(oldPath);
-    // await newAvatar.resize(250, 250);
-    // const newPath = path.join(avatarsDir, filename);
-    // await newAvatar.writeAsync(newPath);
-    // await fs.unlink(oldPath);
-    // const avatar = path.join("avatar", filename);
     updateData.avatarURL = path;
   }
 
