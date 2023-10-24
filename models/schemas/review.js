@@ -5,7 +5,7 @@ import { handlleSaveError } from "../hooks.js";
 const reviewSchema = new Schema(
   {
     _id:{
-      type: SchemaTypes.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "user",
     },
     owner: {
