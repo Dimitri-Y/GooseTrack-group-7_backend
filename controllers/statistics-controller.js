@@ -5,14 +5,8 @@ import Task from "../models/schemas/task.js";
 const getAllTasks = async (req, res, next) => {
   const { _id: owner } = req.user;
 
-  const { filteredFrom, filteredTo } = req.query;
-
   const filters = {
-    owner,
-    date: {
-      $gte: filteredFrom,
-      $lte: filteredTo,
-    },
+    owner
   };
   const tasksList = await Task.find(filters).populate(
     "owner",
@@ -24,7 +18,6 @@ const getAllTasks = async (req, res, next) => {
     code: 200,
     data: {
       result: tasksList,
-      start: filteredFrom,
     },
   });
 };
@@ -32,28 +25,30 @@ const getAllTasks = async (req, res, next) => {
 const getTasksByDate = async (req, res) => {
   const { _id: owner } = req.user;
   const { date } = req.params;
-   if (date) {
-    let startDate, endDate;
-    startDate = new Date(date);
-    startDate.setDate(1);
-    endDate = new Date(date);
-    endDate.setMonth(endDate.getMonth() + 1);
-    endDate.setDate(0);
-  } else {
-    throw HttpError(400);
-  }
+  const pattern = /^\d{4}-\d{2}-\d{2}$/;
+
+  if (!date || !pattern.test(date)) throw HttpError(400);
+
+  const [year, month] = date.split('-');
+
+
+  if (!month) throw HttpError(400);
   const result = await Task.find({
     date: {
-      $gte: startDate,
-      $lte: endDate,
+      $regex: `^\\d{4}-${month}-\\d{2}`,
     },
     owner,
   });
+
   if (!result) {
     throw HttpError(404);
   }
-  res.status(200).json(result);
+
+  const filteredTasks = result.filter(task => task.date.startsWith(date));
+
+  res.status(200).json({ByMonth: result, ByDay: filteredTasks,});
 };
+
 export default {
   getAllTasks: ctrlWrapper(getAllTasks),
   getDayTasks: ctrlWrapper(getTasksByDate),
