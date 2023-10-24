@@ -8,6 +8,12 @@ const reviewSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "user",
     },
+    comment: {
+      type: String,
+    },
+    rating:{
+      type: String,
+    }
   },
   { versionKey: false, timestamps: true }
 );
