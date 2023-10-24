@@ -4,16 +4,23 @@ import { handlleSaveError } from "../hooks.js";
 
 const reviewSchema = new Schema(
   {
+    _id: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
     owner: {
       type: Schema.Types.ObjectId,
       ref: "user",
     },
+    name: {
+      type: String,
+    },
     comment: {
       type: String,
     },
-    rating:{
-      type: String,
-    }
+    rating: {
+      type: Number,
+    },
   },
   { versionKey: false, timestamps: true }
 );
