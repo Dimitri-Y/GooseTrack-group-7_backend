@@ -1,0 +1,35 @@
+### Register User
+### authRouter.post('/:register', authController.signup);
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "userName": "Ludmila",
+  "email": "l.kurochkina@ukr.net",
+  "password": "Qw654321"
+}
+
+### Login User
+### authRouter.post('/:login', authController.signin);
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "l.kurochkina@ukr.net",
+  "password": "Qw654321"
+}
+
+> {%
+    client.global.set("token", response.body.token);
+    client.log("received token: " + client.global.get("token"))
+%}
+
+### Current User
+### authRouter.get('/:curent', authController.getCurrent);
+GET http://localhost:3000/api/users/current
+Authorization:Bearer {{token}}
+
+### Logout User
+### authRouter.post('/:logout', authController.logout);
+POST http://localhost:3000/api/auth/logout
+Authorization: Bearer {{token}}
