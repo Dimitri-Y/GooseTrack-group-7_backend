@@ -51,7 +51,7 @@ const updateById = async (req, res) => {
   const result = await Task.findOneAndUpdate({ _id: taskId, owner }, req.body, {
     new: true,
   });
-  res.status(201).json(result);
+  res.status(200).json(result);
 };
 
 const deleteById = async (req, res) => {
@@ -59,9 +59,10 @@ const deleteById = async (req, res) => {
   const { taskId } = req.params;
   const result = await Task.findOneAndDelete({ _id: taskId, owner });
   if (!result) {
-    throw HttpError(404);
+    throw HttpError(404, "Not found!");
   }
-  res.status(204).send();
+  res.status(200).json({ message: "Task has been removed"})
+      // .send();
 };
 
 export default {

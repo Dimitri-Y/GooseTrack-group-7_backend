@@ -24,7 +24,7 @@ const signup = async (req, res) => {
     throw HttpError(409, "Email already exist");
   }
   const hashPassword = await bcrypt.hash(password, 10);
-  const avatarURL = gravatar.url(email);
+  const avatarURL = gravatar.url(email, { protocol: 'https' });
   const verificationCode = nanoid();
   const newUser = await User.create({
     userName,
@@ -37,7 +37,8 @@ const signup = async (req, res) => {
     birthday: "",
   });
 
-  await sendEmail(verificationCode, email);
+  await sendEmail(verificationCode, email, userName);
+  // const sendUserData = userField(newUser)
 
   res.status(201).json({
     email: newUser.email,
@@ -53,26 +54,26 @@ const signin = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
 
-  if (!user) {
-    throw HttpError(401, "Email or password is wrong");
-  }
-  if (!user.verify) {
-    throw HttpError(409, "This is not verificate");
-  }
-
   const comparePassword = await bcrypt.compare(password, user.password);
-  if (!comparePassword) {
-    throw HttpError(401, "Email or password is wrong");
+  // if (!user) {
+  //   throw HttpError(401, "Email or password is wrong");
+  // }
+  if (!user.verify) {
+    throw HttpError(401, "This is not verificate");
   }
 
+  if (!user || !comparePassword) {
+    throw HttpError(401, "Email or password is wrong");
+  }
+  // const payload = { id: user._id }
   const { _id: id } = user;
   const payload = {
     id,
   };
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-  await User.findByIdAndUpdate(id, { token });
+  await User.findByIdAndUpdate(id, { token }, { new: true });
 
-  res.json({
+  res.status(200).json({
     token,
     user: {
       email: user.email,
@@ -83,7 +84,7 @@ const signin = async (req, res) => {
 const getCurrent = async (req, res) => {
   const { email, phone, skype, birthday, userName, avatarURL } = req.user;
 
-  res.json({
+  res.status(200).json({
     email,
     phone,
     skype,
@@ -97,7 +98,7 @@ const logout = async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: "" });
 
-  res.status(204).json({ message: "No content" });
+  res.status(204).json({message: "No content"});
 };
 
 const updateUser = async (req, res) => {
@@ -139,6 +140,7 @@ const verify = async (req, res) => {
 
   const user = await User.findOne({ verificationCode });
   if (!user) throw HttpError(404);
+  if (user.verify) throw HttpError(400, "Email already verify")
 
   await User.findByIdAndUpdate(user._id, {
     verify: true,

@@ -45,7 +45,7 @@ const getTasksByDate = async (req, res) => {
 
   const filteredTasks = result.filter((task) => task.date.startsWith(date));
 
-  res.json({ ByMonth: result, ByDay: filteredTasks });
+  res.status(200).json({ ByMonth: result, ByDay: filteredTasks });
 };
 
 export default {
