@@ -1,6 +1,5 @@
 import express from "express";
 const authRouter = express.Router();
-// import { addSchema, logSchema } from "../../models/schemas/schema.js";
 import {
   registerSchema,
   authSchema,
@@ -10,8 +9,8 @@ import {
 import authController from "../../controllers/auth-controller.js";
 import authenticate from "../../middlewares/authenticate.js";
 import upload from "../../middlewares/uploud.js";
-import resizeAvatar from "../../middlewares/resizeAvatar.js";
 import validateBody from "../../decorators/validateBody.js";
+import { isValidIdVerificationCode } from "../../middlewares/isValidId.js";
 
 authRouter.post(
   "/auth/register",
@@ -21,7 +20,7 @@ authRouter.post(
 authRouter.post("/auth/login", validateBody(authSchema), authController.signin);
 authRouter.get(
   "/users/verify/:verificationCode",
-
+  isValidIdVerificationCode,
   authController.verify
 );
 authRouter.post(

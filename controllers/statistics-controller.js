@@ -32,7 +32,7 @@ const getAllTasks = async (req, res, next) => {
 const getTasksByDate = async (req, res) => {
   const { _id: owner } = req.user;
   const { date } = req.params;
-   if (date) {
+  if (date) {
     let startDate, endDate;
     startDate = new Date(date);
     startDate.setDate(1);
@@ -54,6 +54,7 @@ const getTasksByDate = async (req, res) => {
   }
   res.json(result);
 };
+
 export default {
   getAllTasks: ctrlWrapper(getAllTasks),
   getDayTasks: ctrlWrapper(getTasksByDate),

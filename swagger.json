@@ -67,7 +67,19 @@
           },
           "400": {
             "description": "Bad request (invalid request body)",
-            "content": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Bad Request"
+                    }
+                  }
+                }
+              }
+            }
           },
           "409": {
             "description": "Email already exist",
@@ -306,14 +318,16 @@
             "name": "filteredFrom",
             "in": "query",
             "schema": {
-              "type": "string"
+              "format": "date",
+              "example": "2004-01-01"
             }
           },
           {
             "name": " filteredTo",
             "in": "query",
             "schema": {
-              "type": "string"
+              "format": "date",
+              "example": "2004-01-0"
             }
           }
         ],
@@ -636,21 +650,64 @@
     "/statistics": {
       "get": {
         "tags": ["Statistics"],
+        "summary": "get ",
         "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskIdResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
           }
         }
       }
     },
-    "/statistics/date": {
+    "/statistics/{date}": {
       "get": {
         "tags": ["Statistics"],
         "description": "",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskIdResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
           }
         }
       }
@@ -833,8 +890,7 @@
           "avatarURL": {
             "type": "string",
             "description": "User's avatar file,later url in cloud",
-            "format": "binary",
-            "example": "file.jpg"
+            "format": "binary"
           }
         }
       },
