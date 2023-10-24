@@ -6,8 +6,8 @@ const getAllReviews = async (req, res) => {
   const result = await Review.find()
     .populate("owner", "userName avatarURL")
     .exec();
-  res.json(result);
-  /* #swagger.tags = ['Reviews'] 
+  res.status(200).json(result);
+  /* #swagger.tags = ['Reviews']
   #swagger.description ='Get all reviews'
  } */
   /* #swagger.responses[200] = {
@@ -29,7 +29,7 @@ const getOwnReview = async (req, res) => {
      description: 'Get successful',
      schema: { $ref: '#definitions/reviews' }
  } */
-  res.json(result);
+  res.status(200).json(result);
 };
 
 const addReview = async (req, res) => {
@@ -58,7 +58,7 @@ const updateReview = async (req, res) => {
   if (!result) {
     throw HttpsError(404, "Not found");
   }
-  res.json(result);
+  res.status(200).json(result);
   /* #swagger.tags = ['Reviews'] 
   #swagger.parameters['id'] = {
    description: 'Existing review ID',
@@ -84,7 +84,7 @@ const deleteReview = async (req, res) => {
   if (!result) {
     throw HttpsError(404, "Not found");
   }
-  res.status(204).json({
+  res.status(200).json({
     message: "Delete success",
   });
 };

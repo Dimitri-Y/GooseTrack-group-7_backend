@@ -52,7 +52,7 @@ const getTasksByDate = async (req, res) => {
   if (!result) {
     throw HttpError(404);
   }
-  res.json(result);
+  res.status(200).json(result);
 };
 export default {
   getAllTasks: ctrlWrapper(getAllTasks),
