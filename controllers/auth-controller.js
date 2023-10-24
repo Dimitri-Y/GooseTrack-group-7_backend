@@ -1,8 +1,5 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import fs from "fs/promises";
-import Jimp from "jimp";
-import path from "path";
 import { User } from "../models/schemas/user.js";
 import { nanoid } from "nanoid";
 import HttpError from "../helpers/httpError.js";
@@ -10,11 +7,15 @@ import userField from "../helpers/userField.js";
 import sendEmail from "../helpers/sendEmail.js";
 import gravatar from "gravatar";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
-const avatarsDir = path.resolve("public", "avatar");
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(dirname(__filename));
 
 import dotenv from "dotenv";
 dotenv.config();
-const { JWT_SECRET, BASE_URL, UKR_NET_EMAIL_FROM } = process.env;
+const { JWT_SECRET } = process.env;
 
 const signup = async (req, res) => {
   const { email, password, userName } = req.body;
@@ -41,7 +42,6 @@ const signup = async (req, res) => {
 
   res.status(201).json({
     email: newUser.email,
-    password: newUser.password,
     verificationCode: newUser.verificationCode,
     phone: " ",
     skype: " ",
@@ -102,12 +102,6 @@ const logout = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  if (!req.user) {
-    return res
-      .status(401)
-      .json({ message: "Missing header with authorization token" });
-  }
-
   const { _id } = req.user;
 
   const { userName, phone, birthday, skype, email } = req.body;
@@ -120,7 +114,6 @@ const updateUser = async (req, res) => {
     email,
   };
 
-  let avatarURL;
   if (req.file) {
     const { path } = req.file;
     updateData.avatarURL = path;
@@ -141,11 +134,11 @@ const updateUser = async (req, res) => {
     user: sendUserData,
   });
 };
+
 const verify = async (req, res) => {
   const { verificationCode } = req.params;
 
   const user = await User.findOne({ verificationCode });
-
   if (!user) throw HttpError(404);
   if (user.verify) throw HttpError(400, "Email already verify")
 
@@ -153,21 +146,15 @@ const verify = async (req, res) => {
     verify: true,
     verificationCode: "",
   });
-
-  res.status(200).json({
-    status: "OK",
-    code: 200,
-    message: "Email verification successful",
-  });
+  res.status(200).sendFile(__dirname + "/GooseTrackVerify.html");
 };
+
 const resendVerifyEmail = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
   if (!user) throw HttpError(404, "Email not found");
 
   if (user.verify) throw HttpError(400, "Email already verify");
-  // if (user.email !== req.user.email)
-  //   throw HttpError(401, "Email not found in this user");
   if (user.verificationCode) {
     await sendEmail(user.verificationCode, email);
     res.status(200).json({
@@ -179,13 +166,13 @@ const resendVerifyEmail = async (req, res) => {
   } else {
     const verificationCode = nanoid();
     const result = await User.findOneAndUpdate(
-      user.email,
+      { email: user.email },
       { verificationCode: verificationCode },
       {
         new: true,
       }
     );
-    await sendEmail(User.verificationCode, email);
+    await sendEmail(verificationCode, email);
     res.status(200).json({
       status: "OK",
       code: 200,

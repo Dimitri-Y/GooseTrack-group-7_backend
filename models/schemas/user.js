@@ -13,15 +13,12 @@ const userSchema = new Schema(
     },
     phone: {
       type: String,
-      // required: true,
     },
     skype: {
       type: String,
-      // required: true,
     },
     birthday: {
       type: String,
-      // required: true,
     },
     password: {
       type: String,
@@ -65,7 +62,6 @@ export const authSchema = Joi.object({
 });
 export const emailSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).required(),
-  
 });
 
 export const updateSchema = Joi.object({
@@ -74,7 +70,7 @@ export const updateSchema = Joi.object({
   skype: Joi.string(),
   birthday: Joi.string().pattern(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/),
   email: Joi.string().pattern(emailRegexp),
-avatarURL: Joi.string()
-})
+  avatarURL: Joi.string(),
+});
 
 export const User = model("user", userSchema);
