@@ -4,7 +4,7 @@ import HttpsError from "../helpers/httpError.js";
 
 const getAllReviews = async (req, res) => {
   const result = await Review.find()
-    .populate("owner", "userName avatarURL")
+    .populate("owner", "userName avatarURL comment")
     .exec();
   res.json(result);
   /* #swagger.tags = ['Reviews'] 
