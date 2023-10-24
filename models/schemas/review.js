@@ -1,18 +1,25 @@
-import { Schema, model } from "mongoose";
+import { Schema, SchemaType, model } from "mongoose";
 import Joi from "joi";
 import { handlleSaveError } from "../hooks.js";
 
 const reviewSchema = new Schema(
   {
+    _id:{
+      type: SchemaTypes.ObjectId,
+      ref: "user",
+    },
     owner: {
       type: Schema.Types.ObjectId,
       ref: "user",
+    },
+    name:{
+      type: String,
     },
     comment: {
       type: String,
     },
     rating:{
-      type: String,
+      type: Number,
     }
   },
   { versionKey: false, timestamps: true }
