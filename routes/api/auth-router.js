@@ -10,7 +10,6 @@ import authController from "../../controllers/auth-controller.js";
 import authenticate from "../../middlewares/authenticate.js";
 import upload from "../../middlewares/uploud.js";
 import validateBody from "../../decorators/validateBody.js";
-import { isValidIdVerificationCode } from "../../middlewares/isValidId.js";
 
 authRouter.post(
   "/auth/register",
@@ -18,11 +17,7 @@ authRouter.post(
   authController.signup
 );
 authRouter.post("/auth/login", validateBody(authSchema), authController.signin);
-authRouter.get(
-  "/users/verify/:verificationCode",
-  isValidIdVerificationCode,
-  authController.verify
-);
+authRouter.get("/users/verify/:verificationCode", authController.verify);
 authRouter.post(
   "/users/verify",
   validateBody(emailSchema),
