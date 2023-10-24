@@ -6,7 +6,7 @@ const getAllTasks = async (req, res, next) => {
   const { _id: owner } = req.user;
 
   const filters = {
-    owner
+    owner,
   };
   const tasksList = await Task.find(filters).populate(
     "owner",
@@ -28,10 +28,9 @@ const getTasksByDate = async (req, res) => {
   const pattern = /^\d{4}-\d{2}-\d{2}$/;
 
   if (!date || !pattern.test(date)) throw HttpError(400);
-  
-  const [year, month] = date.split('-');
 
-  
+  const [year, month] = date.split("-");
+
   if (!month) throw HttpError(400);
   const result = await Task.find({
     date: {
@@ -44,9 +43,9 @@ const getTasksByDate = async (req, res) => {
     throw HttpError(404);
   }
 
-  const filteredTasks = result.filter(task => task.date.startsWith(date));
+  const filteredTasks = result.filter((task) => task.date.startsWith(date));
 
-  res.json({ByMonth: result, ByDay: filteredTasks,});
+  res.json({ ByMonth: result, ByDay: filteredTasks });
 };
 
 export default {
