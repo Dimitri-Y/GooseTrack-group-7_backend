@@ -52,7 +52,7 @@ const addReview = async (req, res) => {
 
 const updateReview = async (req, res) => {
   const { _id: owner } = req.user;
-  const result = await Review.findOneAndUpdate(owner, req.body, {
+  const result = await Review.findOneAndUpdate({owner}, req.body, {
     new: true,
   });
   if (!result) {
@@ -84,7 +84,7 @@ const deleteReview = async (req, res) => {
   if (!result) {
     throw HttpsError(404, "Not found");
   }
-  res(204).json({
+  res.status(204).json({
     message: "Delete success",
   });
 };
