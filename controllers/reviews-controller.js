@@ -18,24 +18,37 @@ const getAllReviews = async (req, res) => {
 
 const getOwnReview = async (req, res) => {
   const { _id: owner } = req.user;
-  const result = await Review.find({ owner });
+  const result = await Review.find({ owner })
+  // .populate("owner", "_id userName")
+  // .exec();
   if (!result) {
     throw HttpsError(404, "Not found");
   }
-  /* #swagger.tags = ['Reviews'] 
-  #swagger.description ='Get all reviews for user'
-  } */
-  /* #swagger.responses[200] = {
-     description: 'Get successful',
-     schema: { $ref: '#definitions/reviews' }
- } */
+
   res.status(200).json(result);
 };
 
+// const addReview = async (req, res) => {
+//   const { _id: owner } = req.user;
+//   const result = await Review.create({ ...req.body, owner });
+//   res.status(201).json(result);
+// }
+
 const addReview = async (req, res) => {
+
   const { _id: owner } = req.user;
+  
+  // const { userName: name } = req.user;
+  // const uname = req.user.userName
+  // const id = req.user._id;
+  // const { comment, raiting } = req.body;
+
+  // const owner = { _id: id, userName: uname}
+
   const result = await Review.create({ ...req.body, owner });
   res.status(201).json(result);
+  
+
   /* #swagger.tags = ['Reviews'] 
   #swagger.description =.parameters['addReview'] = {
    in: 'body',
@@ -49,7 +62,7 @@ const addReview = async (req, res) => {
      schema: { $ref: '#/definitions/reviews' }
  } */
 };
-
+ 
 const updateReview = async (req, res) => {
   const { _id: owner } = req.user;
   const result = await Review.findOneAndUpdate({owner}, req.body, {
