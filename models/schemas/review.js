@@ -4,37 +4,31 @@ import { handlleSaveError } from "../hooks.js";
 
 const reviewSchema = new Schema(
   {
-    _id: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
-    },
-    owner: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
-    },
-    name: {
-      type: String,
-    },
+
     comment: {
       type: String,
     },
     rating: {
       type: Number,
     },
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+        required: true,
+    },
   },
   { versionKey: false, timestamps: true }
 );
-
 reviewSchema.post("save", handlleSaveError);
 
 export const addSchema = Joi.object({
-  name: Joi.string().required(),
   comment: Joi.string().required(),
+  rating: Joi.number().required(),
 });
 
 export const changeSchema = Joi.object({
-  name: Joi.string(),
   comment: Joi.string(),
-}).or("name", "comment");
+  rating: Joi.number(),
+}).or("comment", "rating");
 
 export const Review = model("review", reviewSchema);
