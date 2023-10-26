@@ -16,7 +16,7 @@ const getAll = async (req, res, next) => {
   };
   const tasksList = await Task.find(filters).populate(
     "owner",
-    "_id name email"
+    "_id userName email avatarURL"
   );
 
   res.status(200).json({
@@ -61,8 +61,8 @@ const deleteById = async (req, res) => {
   if (!result) {
     throw HttpError(404, "Not found!");
   }
-  res.status(200).json({ message: "Task has been removed"})
-      // .send();
+  res.status(200).json({ message: "Task has been removed" });
+  // .send();
 };
 
 export default {
